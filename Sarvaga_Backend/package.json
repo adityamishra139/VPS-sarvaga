@@ -1,4 +1,11 @@
 {
+  "name": "Sarvaga_Backend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "prestart": "tsc -b",
+    "start": "node dist/index.js"
+  },
   "dependencies": {
     "@prisma/client": "^5.15.0",
     "@types/jsonwebtoken": "^9.0.6",

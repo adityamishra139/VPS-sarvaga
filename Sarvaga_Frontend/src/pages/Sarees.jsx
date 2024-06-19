@@ -13,7 +13,7 @@ export default function Sarees() {
 
   async function fetchSarees() {
     try {
-      const response = await fetch("http://localhost:5172/user/products/Saree");
+      const response = await fetch("http://77.37.45.150/BE/user/products/Saree");
       if (!response.ok) {
         throw new Error("Failed to fetch sarees");
       }

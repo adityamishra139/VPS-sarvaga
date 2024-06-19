@@ -6,7 +6,7 @@ import Card from '../components/Cards/Card';
 function AdminInventory() {
   const [products, setProducts] = useState([]);
 const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: "http://77.37.45.150/BE",
 });
   useEffect(() => {
     const fetchProducts = async () => {

@@ -22,11 +22,11 @@ const corsOptions = {
     ], // Add other headers as needed
 };
 // Apply CORS options
-app.use((0, cors_1.default)(corsOptions));
+app.use((0, cors_1.default)());
 // Handle preflight requests for all routes
 // app.options('*', cors(corsOptions));
-app.use('/admin', adminRoutes_1.default);
-app.use('/user', userRoutes_1.default);
+app.use('/BE/admin', adminRoutes_1.default);
+app.use('/BE/user', userRoutes_1.default);
 app.listen(port, () => {
     console.log('Listening to port ' + port);
 });
