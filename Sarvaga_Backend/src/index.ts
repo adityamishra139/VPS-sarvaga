@@ -10,18 +10,16 @@ app.use(express.json());
 
 const corsOptions = {
   origin: "https://sarvagafashions.com",
-  methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+  methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE","OPTIONS"],
   credentials: true,
   allowedHeaders: [
-    "Access-Control-Allow-Origin",
-    "Access-Control-Allow-Headers",
-    "Access-Control-Allow-Methods",
-    "Content-Type",
+    'Authorization',
+    "Content-Type"
   ], // Add other headers as needed
 };
 
 // Apply CORS options
-app.use(corsOptions);
+app.use(cors(corsOptions));
 
 // Handle preflight requests for all routes
 app.options('*', cors(corsOptions));
