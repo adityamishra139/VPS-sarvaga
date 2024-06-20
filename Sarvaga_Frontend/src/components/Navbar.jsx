@@ -7,7 +7,7 @@ import axios from "axios";
 
 const Navbar = () => {
   const axiosInstance = axios.create({
-    baseURL:"https://77.37.45.150/BE",
+    baseURL:"http://77.37.45.150:/BE",
   });
  const { loginWithRedirect, logout, user, isAuthenticated } = useAuth0();
   async function checkAdminStatus() {

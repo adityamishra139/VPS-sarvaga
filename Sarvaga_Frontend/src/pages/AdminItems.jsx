@@ -8,7 +8,7 @@ import axios from 'axios';
 
 const AdminItems = () => {
   const axiosInstance = axios.create({
-    baseURL: "https://77.37.45.150:5172/BE",
+    baseURL: "http://77.37.45.150:/BE",
   });
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
