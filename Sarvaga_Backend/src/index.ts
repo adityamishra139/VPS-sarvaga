@@ -9,7 +9,7 @@ const port = 5172;
 app.use(express.json());
 
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: "https://sarvagafashions.com",
   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
   credentials: true,
   allowedHeaders: [
@@ -21,10 +21,10 @@ const corsOptions = {
 };
 
 // Apply CORS options
-app.use(cors());
+app.use(corsOptions);
 
 // Handle preflight requests for all routes
-// app.options('*', cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 app.use('/BE/admin', adminRoutes);
 app.use('/BE/user', userRoutes);
