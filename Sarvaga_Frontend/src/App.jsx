@@ -9,7 +9,7 @@ import Designers from './pages/Designers'
 import Newarrivals from './pages/Newarrivals'
 import Home from './pages/Home'
 import Description from './pages/Description'
-//import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth0 } from "@auth0/auth0-react";
 import CartPage from './pages/Cart';
 import AdminItems from './pages/AdminItems';
 import AdminInventory from './pages/AdminInventory';
@@ -25,7 +25,7 @@ const App = () => {
     });
     AOS.refresh();
   },[]);
-  const isAuthenticated=true;
+  const isAuthenticated=useAuth0();
   return (
     <div>
       <BrowserRouter>
@@ -36,7 +36,7 @@ const App = () => {
           <Route path="/admin/orders" element={<AdminOrders></AdminOrders>}></Route>
           <Route path="/user/aboutus" element={<Aboutus></Aboutus>}></Route>
           <Route
-            path="/sale"
+            path="/home"
             element={<Home Authenticated={isAuthenticated}></Home>}
           ></Route>
           <Route
