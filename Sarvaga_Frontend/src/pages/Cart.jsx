@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar";
 
 const CartPage = () => {
   const axiosInstance = axios.create({
-    baseURL: process.env.REACT_APP_API_URL,
+    baseURL: "https://77.37.45.150/BE",
   });
   const location = useLocation();
   const { cartId } = location.state || {};
