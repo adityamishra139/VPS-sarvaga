@@ -42,6 +42,7 @@ const Navbar = () => {
      checkAdminStatus();
    }
  }, [isAuthenticated]);
+ const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   return (
     <div className="shadow-lg">
@@ -87,11 +88,17 @@ const Navbar = () => {
               </button>
             )}
           </div>
+          <button
+            className="block md:hidden text-white"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            ☰
+          </button>
         </nav>
       </header>
-      <div className="bg-[#1B0022]">
+      <div className={`bg-[#1B0022] ${isMenuOpen ? "block" : "hidden"} md:block`}>
         <div className="container mx-auto">
-          <ul className="flex justify-center items-center gap-8 py-4">
+          <ul className="flex flex-col md:flex-row justify-center items-center gap-8 py-4">
             <li>
               <a
                 href="/home"
