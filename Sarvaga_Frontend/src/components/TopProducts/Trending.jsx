@@ -57,7 +57,7 @@ const Trending = () => {
                 <div className="text-left mx-6 mb-10 max-w-[600px]">
                     {/* <p data-aos="fade-up" className='text-sm text-purple-900 py-1'>Top Rated Products For You</p> */}
                     <h1 data-aos="fade-up" className="text-2xl text-black font-bold">Trending Products</h1>
-                    <p data-aos="fade-up" className='text-sm text-gray-500 mt-1'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi, deleniti natus! Voluptate, enim assumenda?</p>
+                    <p data-aos="fade-up" className='text-sm text-gray-500 mt-1'>Discover the latest trends in fashion with our top-rated products. Handpicked by experts, these styles are sure to make you stand out.</p>
                 </div>
                 {/* Body Section */}
                 <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 place-items-center gap-8'>

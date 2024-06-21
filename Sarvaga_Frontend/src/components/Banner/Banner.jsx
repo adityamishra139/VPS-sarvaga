@@ -17,7 +17,7 @@ const Banner = () => {
           <div className='flex flex-col justify-center gap-6'>
             <h1 data-aos="fade-up" className="text-3xl sm:text-4xl font-bold text-gray-900">Winter Sale Up to 50% Off</h1>
             <p data-aos="fade-up" className='text-sm sm:text-base text-gray-600 tracking-wide leading-6'>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Veritatis nemo inventore ex odit optio saepe.
+            Embrace the chill with our exclusive winter collection! Enjoy up to 50% off on our latest styles and keep yourself warm and fashionable this season.
             </p>
             <div className='flex flex-col gap-6'>
               <div data-aos="fade-up" className='flex items-center gap-4'>

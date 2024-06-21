@@ -68,7 +68,8 @@ const Testimonial = () => {
                 <div className="text-center mb-10 max-w-[600px] mx-auto">
                     <p data-aos="fade-up" className='text-purple-900 py-1'>What Our Customers Say</p>
                     <h1 data-aos="fade-up" className="text-2xl sm:text-3xl font-bold text-black">Testimonials</h1>
-                    <p data-aos="fade-up" className='text-sm text-gray-500 mt-2'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi, deleniti natus! Voluptate, enim assumenda?</p>
+                    <p data-aos="fade-up" className='text-sm text-gray-500 mt-2'>                        Hear from our satisfied customers who have experienced our high-quality products and excellent customer service. Their feedback speaks for itself!
+                    </p>
                 </div>
                 {/* Testimonial Card Section */}
                 <div data-aos="zoom-in">
