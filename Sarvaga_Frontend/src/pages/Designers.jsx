@@ -5,7 +5,7 @@ export default function Designers() {
   return (
     <div>
       <Navbar></Navbar>
-      Designers
+      <strong>Coming soon ....</strong>
       </div>
   )
 }

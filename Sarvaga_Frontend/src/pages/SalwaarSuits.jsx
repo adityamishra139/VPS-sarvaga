@@ -5,7 +5,7 @@ export default function SalwaarSuits() {
   return (
     <div>
       <Navbar></Navbar>
-      Salwaar-suits
+      <strong>Coming soon ....</strong>
       </div>
   )
 }

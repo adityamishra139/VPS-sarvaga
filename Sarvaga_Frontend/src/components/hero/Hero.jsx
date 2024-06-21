@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Slider from 'react-slick';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import image1 from "../../assets/_DSC1439-1.JPG";
-import image2 from "../../assets/_DSC1538.JPG";
+import image1 from '../../assets/_DSC1439-1.JPG';
+import image2 from '../../assets/_DSC1525-1.JPG';
 import image3 from '../../assets/_DSC1465-1.JPG';
 
 const ImageList = [
@@ -11,26 +13,28 @@ const ImageList = [
     id: 1,
     img: image1,
     title: 'Up to 50% off on all saree wears',
-    description:
-      'Discover our exquisite collection of sarees with amazing discounts. Elevate your style with our exclusive offers.',
+    description: 'Discover our exquisite collection of sarees with amazing discounts. Elevate your style with our exclusive offers.',
   },
   {
     id: 2,
     img: image2,
     title: 'Up to 30% off on all saree wears',
-    description:
-      'Explore the beauty and elegance of our saree collection. Limited-time offers you don’t want to miss.',
+    description: 'Explore the beauty and elegance of our saree collection. Limited-time offers you don’t want to miss.',
   },
   {
     id: 3,
     img: image3,
     title: 'Up to 20% off on all saree wears',
-    description:
-      'Upgrade your wardrobe with our stunning sarees. Grab these deals while they last!',
+    description: 'Upgrade your wardrobe with our stunning sarees. Grab these deals while they last!',
   },
 ];
 
 const Hero = () => {
+  useEffect(() => {
+    AOS.init({ once: true });
+    AOS.refresh();
+  }, []);
+
   const settings = {
     dots: true,
     arrows: true,
@@ -48,13 +52,12 @@ const Hero = () => {
     <div className='relative overflow-hidden min-h-[350px] sm:min-h-[450px] bg-gradient-to-b from-purple-100 to-purple-300 flex justify-center items-center'>
       <div className='container mx-auto px-4'>
         <Slider {...settings}>
-          {ImageList.map(data => (
+          {ImageList.map((data) => (
             <div key={data.id} className='p-4'>
               <div className='grid grid-cols-1 sm:grid-cols-2 gap-8 items-center'>
                 <div className='flex flex-col justify-center gap-4 text-center sm:text-left order-2 sm:order-1 p-6 sm:p-12'>
                   <h1
                     data-aos='zoom-out'
-                    data-aos-once='true'
                     data-aos-duration='500'
                     className='text-4xl sm:text-5xl lg:text-6xl font-bold text-[#1B0022]'
                   >
@@ -77,7 +80,6 @@ const Hero = () => {
                 <div className='order-1 sm:order-2 flex justify-center items-center'>
                   <div
                     data-aos='zoom-in'
-                    data-aos-once='true'
                     className='relative'
                   >
                     <img

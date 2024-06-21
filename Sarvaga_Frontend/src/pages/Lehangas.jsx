@@ -5,6 +5,7 @@ export default function Lehangas() {
   return (
     <div>
       <Navbar></Navbar>
-      Lehangas</div>
+      <strong>Coming soon ....</strong>
+      </div>
   )
 }

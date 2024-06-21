@@ -5,7 +5,7 @@ export default function Newarrivals() {
   return (
     <div>
       <Navbar></Navbar>
-      Newarrivals
+      <strong>Coming soon ....</strong>
     </div>
   )
 }

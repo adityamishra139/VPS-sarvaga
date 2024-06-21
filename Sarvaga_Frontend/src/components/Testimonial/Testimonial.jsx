@@ -8,24 +8,18 @@ const Testimonials = [
     {
         id: 1,
         img: image1,
-        title: "Upto 50% off on all saree wears",
-        name: "Aditya",
-        description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam magni facere molestiae aliquid consequatur?'
-    },
+        name: "Simran",
+        description: 'High quality products and nice cloth patterns'},
     {
         id: 2,
         img: image2,
-        name: "Aditya",
-        title: "Upto 30% off on all saree wears",
-        description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam magni facere molestiae aliquid consequatur?'
-    },
+        name: "Ananya",
+        description: 'Best looks and trendy products '},
     {
         id: 3,
         img: image3,
-        name: "Aditya",
-        title: "Upto 20% off on all saree wears",
-        description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam magni facere molestiae aliquid consequatur?'
-    },
+        name: "Sumedha",
+        description: 'nice fitting clothes and good customer support.'},
 ];
 
 const Testimonial = () => {
@@ -82,9 +76,9 @@ const Testimonial = () => {
                         {Testimonials.map((data) => (
                             <div key={data.id} className='p-4'>
                                 <div className='flex flex-col gap-4 shadow-lg py-8 px-6 bg-white rounded-xl relative border border-gray-200'>
-                                    <div className='mb-4 flex justify-center'>
-                                        <img src={data.img} alt="testimonial" className='rounded-full w-20 h-20'/>
-                                    </div>
+                                    {/* <div className='mb-4 flex justify-center'>
+                                        <img src={data.img} alt="testimonial" className='rounded-full w-auto h-auto'/>
+                                    </div> */}
                                     <div className='text-center'>
                                         <p className='text-sm text-gray-500 mb-2'>{data.description}</p>
                                         <h1 className='text-xl font-bold text-gray-800'>{data.name}</h1>
