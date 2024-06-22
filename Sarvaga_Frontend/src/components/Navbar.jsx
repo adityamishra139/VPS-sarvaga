@@ -22,9 +22,6 @@ const Navbar = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            "Access-Control-Request-Method": "POST",
-            "Access-Control-Request-Headers": "content-type,x-requested-with",
-            "Origin": "https://sarvagafashions.com",
           },
           withCredentials: true,
         }
