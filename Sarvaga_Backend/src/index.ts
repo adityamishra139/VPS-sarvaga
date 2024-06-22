@@ -1,40 +1,27 @@
 import express from 'express';
-import adminRoutes from './Routes/adminRoutes'; // Assuming adminRoutes.ts is the correct filename
-import userRoutes from './Routes/userRoutes'; 
+import adminRoutes from './Routes/adminRoutes';
+import userRoutes from './Routes/userRoutes';
 import cors from 'cors';
 
 const app = express();
 const port = 5172;
 
-app.use(express.json());
-
+// Enable CORS for specific origin
+const allowedOrigin = 'https://sarvagafashions.com';
 const corsOptions = {
-  origin: "https://sarvagafashions.com",
-  methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE","OPTIONS"],
-  credentials: true,
-  allowedHeaders: [
-    'Authorization',
-    "Content-Type"
-  ], // Add other headers as needed
+  origin: allowedOrigin,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Access-Control-Allow-Methods', 'Authorization'],
 };
-
-// Apply CORS options
 app.use(cors(corsOptions));
 
-// Handle preflight requests for all routes
-app.options('*', cors(corsOptions));
+// Middleware to parse JSON bodies
+app.use(express.json());
 
-app.options('/BE/*', (req, res) => {
-    res.header('Access-Control-Allow-Origin', 'https://sarvagafashions.com');
-    res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Authorization,Content-Type');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.sendStatus(200);
-});
-
-
+// Routes
 app.use('/BE/admin', adminRoutes);
 app.use('/BE/user', userRoutes);
+
 app.listen(port, () => {
-  console.log('Listening to port ' + port);
+  console.log(`Listening to port ${port}`);
 });
