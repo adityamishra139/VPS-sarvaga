@@ -11,7 +11,7 @@ const allowedOrigin = 'https://sarvagafashions.com/';
 const corsOptions = {
   origin: allowedOrigin,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization','Access-Control-Allow-Origin'],
 };
 app.use(cors(corsOptions));
 
