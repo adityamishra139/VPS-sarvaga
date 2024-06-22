@@ -24,6 +24,15 @@ app.use(cors(corsOptions));
 // Handle preflight requests for all routes
 app.options('*', cors(corsOptions));
 
+app.options('/BE/*', (req, res) => {
+    res.header('Access-Control-Allow-Origin', 'https://sarvagafashions.com');
+    res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Authorization,Content-Type');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.sendStatus(200);
+});
+
+
 app.use('/BE/admin', adminRoutes);
 app.use('/BE/user', userRoutes);
 app.listen(port, () => {
