@@ -1,5 +1,5 @@
 import React from 'react';
-import banner1 from "../../assets/sarees/product 1/p11.jpg";
+import banner1 from "../../assets/sarees/hero and banner/banner.jpg";
 import { IoFastFood } from 'react-icons/io5';
 import { GiFoodTruck } from 'react-icons/gi';
 import { GrSecure } from 'react-icons/gr';
@@ -15,9 +15,9 @@ const Banner = () => {
           </div>
           {/* Text Section */}
           <div className='flex flex-col justify-center gap-6'>
-            <h1 data-aos="fade-up" className="text-3xl sm:text-4xl font-bold text-gray-900">Winter Sale Up to 50% Off</h1>
+            <h1 data-aos="fade-up" className="text-3xl sm:text-4xl font-bold text-gray-900">Flat 40% off on all styles</h1>
             <p data-aos="fade-up" className='text-sm sm:text-base text-gray-600 tracking-wide leading-6'>
-            Embrace the chill with our exclusive winter collection! Enjoy up to 50% off on our latest styles and keep yourself warm and fashionable this season.
+            Discover our elegant and beautiful sarees with an incredible launch offer: flat 40% off on all styles. Don't miss this chance to enhance your wardrobe with our stunning collection. Shop now and embrace timeless elegance at unbeatable prices!
             </p>
             <div className='flex flex-col gap-6'>
               <div data-aos="fade-up" className='flex items-center gap-4'>

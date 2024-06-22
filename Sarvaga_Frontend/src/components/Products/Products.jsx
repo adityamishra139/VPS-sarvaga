@@ -1,50 +1,50 @@
 import React from 'react';
-import img1 from "../../assets/_DSC1439-1.JPG";
-import img2 from "../../assets/_DSC1535-1.JPG";
-import img3 from "../../assets/_DSC1465-1.JPG";
+import img1 from "../../assets/sarees/product 1/jpeg-optimizer__DSC1395-1.JPG";
+import img2 from "../../assets/sarees/product 2/jpeg-optimizer__DSC1407-1.JPG";
+import img3 from "../../assets/sarees/product 3/jpeg-optimizer__DSC1423-1.JPG";
 import img4 from "../../assets/_DSC1528-1.JPG";
-import img5 from "../../assets/sarees/product 3/_DSC1416-2.JPG";
+import img5 from "../../assets/sarees/product 5/variant2/_DSC1557.JPG";
 import { FaStar } from "react-icons/fa6";
 
 const ProductsData = [
     {
         id: 1,
         img: img1,
-        title: "Women Ethnic",
-        rating: 5.0,
-        author: "Ambarish",
+        title: "Chanderi Silk ",
+        rating: 4.8,
+        color: "Royal Blue",
         aosDelay: "0",
     },
     {
         id: 2,
         img: img2,
-        title: "Women Western",
-        rating: 5.0,
-        author: "Sumedha",
+        title: "Silk zari stripe ",
+        rating: 4.5,
+        color: "Magenta",
         aosDelay: "100",
     },
     {
         id: 3,
         img: img3,
-        title: "Women Traditionals",
+        title: "Dupion Silk ",
         rating: 5.0,
-        author: "Aakash",
+        color: "Rama",
         aosDelay: "200",
     },
     {
         id: 4,
         img: img4,
-        title: "Women Ethnics 1",
-        rating: 5.0,
-        author: "Dodeja",
+        title: "Cotton",
+        rating: 4.3,
+        color: "Pink",
         aosDelay: "300",
     },
     {
         id: 5,
         img: img5,
-        title: "Women Traditionals 2",
-        rating: 5.0,
-        author: "Simran",
+        title: "Handbrush Linen silk",
+        rating: 4.6,
+        color: "Light Orange",
         aosDelay: "400",
     },
 ];
@@ -71,7 +71,7 @@ const Products = () => {
                             <img src={data.img} alt={data.title} className='h-[220px] w-full object-cover rounded-md' />
                             <div>
                                 <h3 className="font-semibold text-lg">{data.title}</h3>
-                                <p className='text-sm text-gray-600'>{data.author}</p>
+                                <p className='text-sm text-gray-600'>{data.color}</p>
                                 <div className="flex items-center gap-1">
                                     <FaStar className="text-yellow-400" />
                                     <span>{data.rating}</span>

@@ -4,27 +4,27 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import image1 from '../../assets/_DSC1439-1 - Copy-min.JPG';
-import image2 from '../../assets/_DSC1525-1-min.JPG';
-import image3 from '../../assets/_DSC1465-1-min.JPG';
+import image2 from '../../assets/sarees/hero and banner/jpeg-optimizer_hero2.jpg';
+import image1 from '../../assets/sarees/hero and banner/p2.png';
+import image3 from '../../assets/sarees/hero and banner/p1.png';
 
 const ImageList = [
   {
     id: 1,
     img: image1,
-    title: 'Up to 50% off on all saree wears',
+    title: 'Drape yourself in elegance with our exquisite sarees.',
     description: 'Discover our exquisite collection of sarees with amazing discounts. Elevate your style with our exclusive offers.',
   },
   {
     id: 2,
     img: image2,
-    title: 'Up to 30% off on all saree wears',
+    title: 'Experience timeless beauty with our stunning saree collection.',
     description: 'Explore the beauty and elegance of our saree collection. Limited-time offers you don’t want to miss.',
   },
   {
     id: 3,
     img: image3,
-    title: 'Up to 20% off on all saree wears',
+    title: 'Unveil your grace in our beautifully crafted sarees.',
     description: 'Upgrade your wardrobe with our stunning sarees. Grab these deals while they last!',
   },
 ];

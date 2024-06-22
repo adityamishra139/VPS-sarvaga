@@ -1,50 +1,50 @@
 import React from 'react';
-import img3 from "../../assets/_DSC1439-1.JPG";
-import img5 from "../../assets/_DSC1535-1.JPG";
+import img1 from "../../assets/sarees/product 1/jpeg-optimizer__DSC1394-2.JPG";
 import img2 from "../../assets/_DSC1465-1.JPG";
+import img3 from "../../assets/_DSC1439-1.JPG";
 import img4 from "../../assets/_DSC1528-1.JPG";
-import img1 from "../../assets/sarees/product 3/_DSC1416-2.JPG";
+import img5 from "../../assets/_DSC1535-1.JPG";
 import { FaStar } from "react-icons/fa6";
 
 const productsData = [
     {
         id: 1,
         img: img1,
-        title: "Women Ethnic",
-        rating: 5.0,
-        author: "Ambarish",
+        title: "Chanderi Silk",
+        rating: 4.0,
+        author: "Purple",
         aosDelay: "0",
     },
     {
         id: 2,
         img: img2,
-        title: "Women Western",
-        rating: 5.0,
-        author: "Sumedha",
+        title: "Cotton",
+        rating: 4.6,
+        author: "Cyan",
         aosDelay: "100",
     },
     {
         id: 3,
         img: img3,
-        title: "Women Traditionals",
-        rating: 5.0,
-        author: "Aakash",
+        title: "Cotton",
+        rating: 4.2,
+        author: "Pista",
         aosDelay: "200",
     },
     {
         id: 4,
         img: img4,
-        title: "Women Ethnics 1",
-        rating: 5.0,
-        author: "Dodeja",
+        title: "Cotton",
+        rating: 4.7,
+        author: "Pink",
         aosDelay: "300",
     },
     {
         id: 5,
         img: img5,
-        title: "Women Traditionals 2",
-        rating: 5.0,
-        author: "Simran",
+        title: "Cotton",
+        rating: 4.9,
+        author: "Tasar",
         aosDelay: "400",
     },
 ];
