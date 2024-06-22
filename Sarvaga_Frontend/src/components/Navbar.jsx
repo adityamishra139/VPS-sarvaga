@@ -7,9 +7,9 @@ import axios from "axios";
 
 const Navbar = () => {
   const axiosInstance = axios.create({
-    baseURL:"https://api.sarvagafashions.com/BE",
+    baseURL: "https://api.sarvagafashions.com/BE",
   });
- const { loginWithRedirect, logout, user, isAuthenticated } = useAuth0();
+  const { loginWithRedirect, logout, user, isAuthenticated } = useAuth0();
   async function checkAdminStatus() {
     try {
       const response = await axiosInstance.post(
@@ -22,8 +22,11 @@ const Navbar = () => {
         {
           headers: {
             "Content-Type": "application/json",
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type,x-requested-with",
+            "Origin": "https://sarvagafashions.com",
           },
-          withCredentials: true, 
+          withCredentials: true,
         }
       );
       const admin = response.data.res.isAdmin;
@@ -34,12 +37,12 @@ const Navbar = () => {
       console.error("Error fetching admin status:", error);
     }
   }
- useEffect(() => {
-   if (isAuthenticated) {
-     checkAdminStatus();
-   }
- }, [isAuthenticated]);
- const [isMenuOpen, setIsMenuOpen] = useState(false);
+  useEffect(() => {
+    if (isAuthenticated) {
+      checkAdminStatus();
+    }
+  }, [isAuthenticated]);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   return (
     <div className="shadow-lg">
