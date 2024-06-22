@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import Navbar from "../components/Navbar";
-import Card from "../components/Cards/Card"; // Ensure this is the correct path
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
 import PropagateLoader from "react-spinners/PropagateLoader";
+
+// Lazy load the Card component
+const Card = lazy(() => import("../components/Cards/Card"));
+
 export default function Sarees() {
   const [sarees, setSarees] = useState([]);
   const navigate = useNavigate();
@@ -43,19 +46,21 @@ export default function Sarees() {
     <div className="bg-gray-50 min-h-screen">
       {isLoading ? (
         <div className="flex items-center justify-center min-h-screen">
- <PropagateLoader color='#A855F7' />
-         </div>
+          <PropagateLoader color='#A855F7' />
+        </div>
       ) : (
         <>
           <Navbar />
           <div className="container mx-auto px-4 mt-14">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {sarees.map((saree) => (
-                <div key={saree.id} onClick={() => handleCardClick(saree.id)}>
-                  <Card product={saree} />
-                </div>
-              ))}
-            </div>
+            <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><PropagateLoader color='#A855F7' /></div>}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {sarees.map((saree) => (
+                  <div key={saree.id} onClick={() => handleCardClick(saree.id)}>
+                    <Card product={saree} />
+                  </div>
+                ))}
+              </div>
+            </Suspense>
           </div>
         </>
       )}
