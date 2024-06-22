@@ -6,14 +6,7 @@ import cors from 'cors';
 const app = express();
 const port = 5172;
 
-// Enable CORS for specific origin
-const allowedOrigin = 'https://sarvagafashions.com/';
-const corsOptions = {
-  origin: allowedOrigin,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization','Access-Control-Allow-Origin'],
-};
-app.use(cors(corsOptions));
+app.use(cors());
 
 // Middleware to parse JSON bodies
 app.use(express.json());
