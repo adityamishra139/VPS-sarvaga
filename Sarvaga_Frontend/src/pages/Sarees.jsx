@@ -13,16 +13,23 @@ export default function Sarees() {
 
   async function fetchSarees() {
     try {
-      const response = await fetch("https://api.sarvagafashions.com/BE/user/products/Saree");
-      if (!response.ok) {
-        throw new Error("Failed to fetch sarees");
-      }
-      const data = await response.json();
-      setSarees(data);
+        const response = await axios.get("https://api.sarvagafashions.com/BE/user/products/Saree", {
+          headers: {
+            "Content-Type": "application/json"
+        },
+            withCredentials: true // if you need to include credentials like cookies
+        });
+
+        if (response.status !== 200) {
+            throw new Error("Failed to fetch sarees");
+        }
+
+        const data = response.data;
+        setSarees(data); // Assuming setSarees is a state setter function
     } catch (error) {
-      console.error("Error fetching sarees:", error);
+        console.error("Error fetching sarees:", error);
     }
-  }
+}
 
   const handleCardClick = async (id) => {
     navigate(`/description/${id}`);

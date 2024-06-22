@@ -15,8 +15,6 @@ const axiosInstance = axios.create({
           "/admin/products/all",
           {
             headers: {
-              "Access-Control-Allow-Headers": "*",
-              "Access-Control-Allow-Methods": "*",
               "Content-Type": "application/json",
             },
             withCredentials: true,

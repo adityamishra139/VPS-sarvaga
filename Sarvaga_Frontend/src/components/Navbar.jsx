@@ -21,12 +21,9 @@ const Navbar = () => {
         },
         {
           headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "*",
-            "Access-Control-Allow-Methods": "*",
             "Content-Type": "application/json",
           },
-          withCredentials: true, // This ensures credentials are included (like 'credentials: "include"' in fetch)
+          withCredentials: true, 
         }
       );
       const admin = response.data.res.isAdmin;
