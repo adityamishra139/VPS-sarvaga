@@ -7,11 +7,11 @@ const app = express();
 const port = 5172;
 
 // Enable CORS for specific origin
-const allowedOrigin = 'https://sarvagafashions.com';
+const allowedOrigin = 'https://sarvagafashions.com/';
 const corsOptions = {
   origin: allowedOrigin,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Access-Control-Allow-Methods', 'Authorization'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
 };
 app.use(cors(corsOptions));
 
@@ -22,6 +22,7 @@ app.use(express.json());
 app.use('/BE/admin', adminRoutes);
 app.use('/BE/user', userRoutes);
 
+// Start the server
 app.listen(port, () => {
   console.log(`Listening to port ${port}`);
 });
