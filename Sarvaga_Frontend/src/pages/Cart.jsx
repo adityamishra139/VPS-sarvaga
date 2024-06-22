@@ -48,7 +48,7 @@ async function fetchCartItems() {
                   <strong>Color:</strong> {item.color}
                 </p>
                 <p className="text-xl font-semibold mt-2">
-                  Price: ${item.price}
+                  Price: Rs.{item.price}
                 </p>
               </div>
             ))

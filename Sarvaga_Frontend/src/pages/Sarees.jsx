@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import Card from "../components/Cards/Card"; // Update with the correct path to your Card component
+import Card from "../components/Cards/Card"; // Ensure this is the correct path
 import { useNavigate } from "react-router-dom";
-
+import { useAuth0 } from "@auth0/auth0-react";
+import axios from 'axios';
+import PropagateLoader from "react-spinners/PropagateLoader";
 export default function Sarees() {
   const [sarees, setSarees] = useState([]);
   const navigate = useNavigate();
+  const { isLoading } = useAuth0();
 
   useEffect(() => {
     fetchSarees();
@@ -13,40 +16,49 @@ export default function Sarees() {
 
   async function fetchSarees() {
     try {
-        const response = await axios.get("https://api.sarvagafashions.com/BE/user/products/Saree", {
-          headers: {
-            "Content-Type": "application/json"
+      const response = await axios.get("https://api.sarvagafashions.com/BE/user/products/Saree", {
+        headers: {
+          "Content-Type": "application/json"
         },
-            withCredentials: true // if you need to include credentials like cookies
-        });
+        withCredentials: true // if you need to include credentials like cookies
+      });
 
-        if (response.status !== 200) {
-            throw new Error("Failed to fetch sarees");
-        }
+      if (response.status !== 200) {
+        throw new Error("Failed to fetch sarees");
+      }
 
-        const data = response.data;
-        setSarees(data); // Assuming setSarees is a state setter function
+      const data = response.data;
+      setSarees(data);
     } catch (error) {
-        console.error("Error fetching sarees:", error);
+      console.error("Error fetching sarees:", error);
+      // Optionally, set an error state to inform the user
     }
-}
+  }
 
-  const handleCardClick = async (id) => {
+  const handleCardClick = (id) => {
     navigate(`/description/${id}`);
   };
 
   return (
-    <div className="bg-gray-50">
-      <Navbar />
-      <div className="container mx-auto px-4 mt-14">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {sarees.map((saree) => (
-            <div key={saree.id} onClick={() => handleCardClick(saree.id)}>
-              <Card product={saree} />
+    <div className="bg-gray-50 min-h-screen">
+      {isLoading ? (
+        <div className="flex items-center justify-center min-h-screen">
+ <PropagateLoader color='#A855F7' />
+         </div>
+      ) : (
+        <>
+          <Navbar />
+          <div className="container mx-auto px-4 mt-14">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {sarees.map((saree) => (
+                <div key={saree.id} onClick={() => handleCardClick(saree.id)}>
+                  <Card product={saree} />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
