@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar";
 
 const CartPage = () => {
   const axiosInstance = axios.create({
-    baseURL: "https://77.37.45.150:/BE",
+    baseURL: "https://api.sarvagafashions.com/BE",
   });
   const location = useLocation();
   const { cartId } = location.state || {};
