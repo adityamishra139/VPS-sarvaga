@@ -9,14 +9,7 @@ const userRoutes_1 = __importDefault(require("./Routes/userRoutes"));
 const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 const port = 5172;
-// Enable CORS for specific origin
-const allowedOrigin = 'https://sarvagafashions.com/';
-const corsOptions = {
-    origin: allowedOrigin,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
-};
-app.use((0, cors_1.default)(corsOptions));
+app.use((0, cors_1.default)());
 // Middleware to parse JSON bodies
 app.use(express_1.default.json());
 // Routes
