@@ -6,7 +6,7 @@ import cors from 'cors';
 const app = express();
 const port = 5172;
 
-app.use(cors());
+app.use(cors({origin:'https://sarvagafashions.com'}));
 
 // Middleware to parse JSON bodies
 app.use(express.json());
