@@ -23,7 +23,6 @@ export default function Sarees() {
         headers: {
           "Content-Type": "application/json"
         },
-        withCredentials: true // if you need to include credentials like cookies
       });
 
       if (response.status !== 200) {
