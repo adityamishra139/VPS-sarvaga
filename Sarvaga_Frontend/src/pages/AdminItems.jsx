@@ -23,9 +23,6 @@ const AdminItems = () => {
     const fetchProducts = async () => {
       try {
         const response = await axiosInstance.get("/admin/products/all", {
-          headers: {
-            "Content-Type": "application/json",
-          },
         });
         setProducts(response.data);
       } catch (error) {

@@ -12,12 +12,7 @@ const axiosInstance = axios.create({
     const fetchProducts = async () => {
       try {
         const response = await axiosInstance.get(
-          "/admin/products/all",
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
+          "/admin/products/all"
         );
         setProducts(response.data);
       } catch (error) {
