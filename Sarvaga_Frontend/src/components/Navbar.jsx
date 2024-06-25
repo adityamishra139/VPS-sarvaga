@@ -151,18 +151,16 @@ const Navbar = () => {
             </li>
             {isAdmin ? (
               <li className="relative group">
-                <a
-                  href="/admin"
-                  target="_self"
+                <p
                   className="font-semibold text-red-500 hover:text-purple-500"
                 >
                   Admin
-                </a>
+                </p>
                 <div className=" relative">
                   <ul className="bg-[#1B0022] absolute left-0 mt-2 w-48 bg-[#1B0022] shadow-lg rounded-md py-2 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <li>
                       <a
-                        href="/admin/editItems"
+                        href="/admineditItems"
                         target="_self"
                         className="block px-4 py-2 text-white hover:text-purple-500"
                       >
@@ -171,7 +169,7 @@ const Navbar = () => {
                     </li>
                     <li>
                       <a
-                        href="/admin/inventory"
+                        href="/admininventory"
                         target="_self"
                         className=" block px-4 py-2 text-white hover:text-purple-500"
                       >
@@ -180,7 +178,7 @@ const Navbar = () => {
                     </li>
                     <li>
                       <a
-                        href="/admin/orders"
+                        href="/adminorders"
                         target="_self"
                         className="block px-4 py-2 text-white hover:text-purple-500"
                       >
