@@ -23,7 +23,6 @@ const Navbar = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true,
         }
       );
       const admin = response.data.res.isAdmin;

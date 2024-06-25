@@ -26,7 +26,6 @@ const AdminItems = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true,
         });
         setProducts(response.data);
       } catch (error) {
