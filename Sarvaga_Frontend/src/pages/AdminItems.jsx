@@ -5,11 +5,13 @@ import Card from '../components/Cards/CardAdmin';
 import Navbar from '../components/Navbar';
 import ConfirmDialog from '../components/ConfirmDialog';
 import axios from 'axios';
-
+import { useAuth0 } from '@auth0/auth0-react';
+import PropagateLoader from 'react-spinners/PropagateLoader';
 const AdminItems = () => {
   const axiosInstance = axios.create({
     baseURL: "https://api.sarvagafashions.com/BE",
   });
+  const {isLoading}  = useAuth0();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [filePreviews, setFilePreviews] = useState([]);
@@ -127,6 +129,8 @@ const AdminItems = () => {
 
   return (
     <>
+    {isLoading ? <div className="flex items-center justify-center min-h-screen">
+      <PropagateLoader color='#A855F7' />        </div> : <>
       <Navbar />
       <div className="p-8 pt-16">
         <h1 className="text-2xl font-bold mb-4">Admin Page</h1>
@@ -253,6 +257,8 @@ const AdminItems = () => {
           message="Are you sure you want to delete this product?"
         />
       </div>
+    </>}
+    
     </>
   );
 };

@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import axios from 'axios';
 import Card from '../components/Cards/Card';
-
+import { useAuth0 } from '@auth0/auth0-react';
+import PropagateLoader from 'react-spinners/PropagateLoader';
 function AdminInventory() {
   const [products, setProducts] = useState([]);
+  const {isLoading} = useAuth0();
 const axiosInstance = axios.create({
   baseURL: "https://api.sarvagafashions.com/BE",
 });
@@ -23,7 +25,9 @@ const axiosInstance = axios.create({
   }, []);
 
   return (
-    <div>
+    <>
+    {isLoading ? <div className="flex items-center justify-center min-h-screen">
+      <PropagateLoader color='#A855F7' />        </div> : <div>
       <Navbar />
       <div className="p-8 pt-16">
         <h1 className="text-2xl font-bold mb-4">Admin Inventory</h1>
@@ -33,7 +37,9 @@ const axiosInstance = axios.create({
           ))}
         </div>
       </div>
-    </div>
+    </div>}
+    
+    </>
   );
 }
 
