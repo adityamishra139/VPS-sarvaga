@@ -5,6 +5,7 @@ import img3 from "../../assets/sarees/product 3/jpeg-optimizer__DSC1423-1.JPG";
 import img4 from "../../assets/_DSC1528-1.JPG";
 import img5 from "../../assets/sarees/product 5/variant2/_DSC1557.JPG";
 import { FaStar } from "react-icons/fa6";
+import {useNavigate} from 'react-router-dom'
 
 const ProductsData = [
     {
@@ -50,6 +51,10 @@ const ProductsData = [
 ];
 
 const Products = () => {
+    const navigate = useNavigate();
+    const handleClick = ()=>{
+        navigate(`/description`)
+    }
     return (
         <div className='mt-14 mb-12 flex justify-center'>
             <div className="container bg-gray-100 py-10 px-5">
@@ -63,7 +68,7 @@ const Products = () => {
                 <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 place-items-center gap-8'>
                     {/* Card Sections */}
                     {ProductsData.map((data) => (
-                        <div
+                        <div onClick={handleClick}
                             data-aos="fade-up"
                             data-aos-delay={data.aosDelay}
                             key={data.id}
