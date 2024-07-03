@@ -8,7 +8,7 @@ import { FaStar } from "react-icons/fa6";
 
 const productsData = [
     {
-        id: 1,
+        id: 6,
         img: img1,
         title: "Chanderi Silk",
         rating: 4.0,
@@ -16,7 +16,7 @@ const productsData = [
         aosDelay: "0",
     },
     {
-        id: 2,
+        id: 7,
         img: img2,
         title: "Cotton",
         rating: 4.6,
@@ -24,7 +24,7 @@ const productsData = [
         aosDelay: "100",
     },
     {
-        id: 3,
+        id: 8,
         img: img3,
         title: "Cotton",
         rating: 4.2,
@@ -32,7 +32,7 @@ const productsData = [
         aosDelay: "200",
     },
     {
-        id: 4,
+        id: 9,
         img: img4,
         title: "Cotton",
         rating: 4.7,
@@ -40,7 +40,7 @@ const productsData = [
         aosDelay: "300",
     },
     {
-        id: 5,
+        id: 10,
         img: img5,
         title: "Cotton",
         rating: 4.9,
