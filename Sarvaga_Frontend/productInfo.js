@@ -1,7 +1,7 @@
 export const productInfo=[
     {
         "id": 1,
-        "img": "Sarvaga_Frontend/dist/assets/sarees/product 1/_DSC1400-1.JPG",
+        "img": "../../assets/sarees/product 1/jpeg-optimizer__DSC1395-1.JPG",
         "title": "Chanderi Silk Saree ",
         "rating": 4.8,
         "color": "Royal Blue",
@@ -41,7 +41,7 @@ export const productInfo=[
     },
     {
         id: 6,
-        img: img1,
+        img: "",
         title: "Chanderi Silk",
         rating: 4.0,
         author: "Purple",
@@ -49,7 +49,7 @@ export const productInfo=[
     },
     {
         id: 7,
-        img: img2,
+        img: "",
         title: "Cotton",
         rating: 4.6,
         author: "Cyan",
@@ -57,7 +57,7 @@ export const productInfo=[
     },
     {
         id: 8,
-        img: img3,
+        img: "",
         title: "Cotton",
         rating: 4.2,
         author: "Pista",
@@ -65,7 +65,7 @@ export const productInfo=[
     },
     {
         id: 9,
-        img: img4,
+        img: "",
         title: "Cotton",
         rating: 4.7,
         author: "Pink",
@@ -73,7 +73,7 @@ export const productInfo=[
     },
     {
         id: 10,
-        img: img5,
+        img: "",
         title: "Cotton",
         rating: 4.9,
         author: "Tasar",

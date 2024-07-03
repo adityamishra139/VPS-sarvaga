@@ -18,34 +18,39 @@ const Productpage = ({ id }) => {
     fetchProductById();
   }, [id]);
 
-  async function fetchProductById() {
-    try {
-      const response = await fetch(
-        `http://localhost:5172/user/products/ID/${productInfo[id].id}`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch product");
-      }
-      const data = await response.json();
-      setProduct(data);
-      setImages({
-        img1: data.img1 || "",
-        img2: data.img2 || "",
-        img3: data.img3 || "",
-        img4: data.img4 || "",
-      });
-      setActiveImage(data.img1 || "");
-    } catch (error) {
-      console.error("Error fetching product:", error);
-    }
+  const fetchProductById=()=>{
+    setActiveImage(productInfo[id-1].img || "");
+    
   }
-   const handleViewCartClick = async () => {
-     try {
-       navigate("/cart", { state: { cartId: product.cartId } });
-     } catch (error) {
-       console.error("Error navigating to cart page:", error);
-     }
-   };
+
+  // async function fetchProductById() {
+  //   try {
+  //     const response = await fetch(
+  //       `http://localhost:5172/user/products/ID/${productInfo[id].id}`
+  //     );
+  //     if (!response.ok) {
+  //       throw new Error("Failed to fetch product");
+  //     }
+  //     const data = await response.json();
+  //     setProduct(data);
+  //     setImages({
+  //       img1: data.img1 || "",
+  //       img2: data.img2 || "",
+  //       img3: data.img3 || "",
+  //       img4: data.img4 || "",
+  //     });
+  //     setActiveImage(data.img1 || "");
+  //   } catch (error) {
+  //     console.error("Error fetching product:", error);
+  //   }
+  // }
+  //  const handleViewCartClick = async () => {
+  //    try {
+  //      navigate("/cart", { state: { cartId: product.cartId } });
+  //    } catch (error) {
+  //      console.error("Error navigating to cart page:", error);
+  //    }
+  //  };
   return (
     <div className="flex flex-col justify-between lg:flex-row gap-16 lg:items-start">
       <div className="flex flex-col gap-6 lg:w-2/4">
