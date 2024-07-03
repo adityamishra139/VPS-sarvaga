@@ -52,8 +52,8 @@ const ProductsData = [
 
 const Products = () => {
     const navigate = useNavigate();
-    const handleClick = ()=>{
-        navigate(`/description`)
+    const handleClick = (id)=>{
+        navigate(`/description/${id}`)
     }
     return (
         <div className='mt-14 mb-12 flex justify-center'>
@@ -68,7 +68,7 @@ const Products = () => {
                 <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 place-items-center gap-8'>
                     {/* Card Sections */}
                     {ProductsData.map((data) => (
-                        <div onClick={handleClick}
+                        <div onClick={()=>handleClick(data.id)}
                             data-aos="fade-up"
                             data-aos-delay={data.aosDelay}
                             key={data.id}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { productInfo } from "../../../productInfo";
 const Productpage = ({ id }) => {
   const [images, setImages] = useState({
     img1: "",
@@ -21,7 +21,7 @@ const Productpage = ({ id }) => {
   async function fetchProductById() {
     try {
       const response = await fetch(
-        `http://localhost:5172/user/products/ID/${id}`
+        `http://localhost:5172/user/products/ID/${productInfo[id].id}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch product");

@@ -2,7 +2,6 @@ import React from "react";
 import Productpage from "../components/Productpage/Productpage";
 import Navbar from "../components/Navbar";
 import { useParams } from "react-router-dom";
-
 const Description = () => {
   const { id } = useParams();
   if (!id) {
