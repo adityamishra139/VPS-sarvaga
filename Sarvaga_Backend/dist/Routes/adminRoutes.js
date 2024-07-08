@@ -17,206 +17,108 @@ const zod_1 = require("zod");
 const client_1 = require("@prisma/client");
 const multer_1 = __importDefault(require("multer"));
 const path_1 = __importDefault(require("path"));
+const prisma = new client_1.PrismaClient();
+const router = express_1.default.Router();
+router.use(express_1.default.json());
+// Configure multer storage
 const storage = multer_1.default.diskStorage({
-    destination: "./../uploads/products/",
-    filename: function (req, file, cb) {
-        cb(null, file.fieldname + "-" + Date.now() + path_1.default.extname(file.originalname));
+    destination: path_1.default.join(__dirname, "/../uploads/products/"),
+    filename: (req, file, cb) => {
+        cb(null, `${file.fieldname}-${Date.now()}${path_1.default.extname(file.originalname)}`);
     },
 });
 const upload = (0, multer_1.default)({
-    storage: storage,
-    limits: { fileSize: 10000000 }, // 10MB limit
-    fileFilter: function (req, file, cb) {
-        checkFileType(file, cb);
+    storage,
+    limits: { fileSize: 500000 },
+    fileFilter: (req, file, cb) => {
+        const filetypes = /jpeg|jpg|png|gif/;
+        const extname = filetypes.test(path_1.default.extname(file.originalname).toLowerCase());
+        const mimetype = filetypes.test(file.mimetype);
+        if (mimetype && extname) {
+            cb(null, true);
+        }
+        else {
+            cb(new Error("Error: Images Only!"));
+        }
     },
-}).single("productImage");
-function checkFileType(file, cb) {
-    const filetypes = /jpeg|jpg|png|gif/;
-    const extname = filetypes.test(path_1.default.extname(file.originalname).toLowerCase());
-    const mimetype = filetypes.test(file.mimetype);
-    if (mimetype && extname) {
-        return cb(null, true);
-    }
-    else {
-        cb("Error: Images Only!");
-    }
-}
-const routerA = express_1.default.Router();
-const prismaA = new client_1.PrismaClient();
-routerA.use(express_1.default.json());
+}).array("productImage", 4);
+// Define validation schema
 const adminSchema = zod_1.z.object({
     username: zod_1.z.string(),
     email: zod_1.z.string().email(),
-    name: zod_1.z.string()
+    name: zod_1.z.string(),
 });
+const productSchema = zod_1.z.object({
+    specialCategory: zod_1.z.string().optional(),
+    category: zod_1.z.string(),
+    productName: zod_1.z.string(),
+    description: zod_1.z.string(),
+    fabric: zod_1.z.string(),
+    color: zod_1.z.string(),
+    images: zod_1.z.array(zod_1.z.object({ url: zod_1.z.string() })).optional(),
+    price: zod_1.z.number(),
+});
+// Admin functions
 function insertAdmin(username, email, name) {
     return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const res = yield prismaA.admin.create({
-                data: {
-                    username,
-                    email,
-                    name,
-                },
-            });
-            return res;
-        }
-        catch (error) {
-            console.error("Error inserting user:", error);
-            throw error;
-        }
+        return prisma.admin.create({
+            data: { username, email, name },
+        });
     });
 }
+function checkAdmin(email) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return prisma.admin.findFirst({ where: { email } });
+    });
+}
+// Product functions
 function getAllProducts() {
     return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const product = yield prismaA.product.findMany();
-            return product;
-        }
-        catch (error) {
-            console.error("Error fetching product by ID:", error);
-            throw error;
-        }
+        return prisma.product.findMany({
+            include: {
+                images: true,
+            },
+        });
+    });
+}
+function insertProduct(data) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return prisma.product.create({
+            data: {
+                specialCategory: data.specialCategory,
+                category: data.category,
+                productName: data.productName,
+                description: data.description,
+                fabric: data.fabric,
+                color: data.color,
+                price: data.price,
+                images: {
+                    create: data.images,
+                },
+            },
+        });
     });
 }
 function deleteProductById(id) {
     return __awaiter(this, void 0, void 0, function* () {
-        try {
-            yield prismaA.cartProduct.deleteMany({
-                where: {
-                    productId: id,
-                },
-            });
-            const product = yield prismaA.product.delete({
-                where: {
-                    id,
-                },
-            });
-            if (!product) {
-                return null;
-            }
-            return product;
-        }
-        catch (error) {
-            console.error("Error deleting product by ID:", error);
-            throw error;
-        }
+        yield prisma.cartProduct.deleteMany({ where: { productId: id } });
+        return prisma.product.delete({ where: { id } });
     });
 }
-routerA.post("/upload", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield upload(req, res, (err) => {
-        if (err) {
-            res.status(400).json({ msg: err });
-        }
-        else {
-            if (req.file == undefined) {
-                res.status(400).json({ msg: "No file selected" });
-            }
-            else {
-                res.status(200).json({
-                    msg: "File uploaded",
-                    filePath: `/uploads/products/${req.file.filename}`,
-                });
-            }
-        }
-    });
-}));
-function checkAdmin(username, email, name) {
+function getProductsById(id) {
     return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const res = yield prismaA.admin.findFirst({
-                where: {
-                    email,
-                },
-            });
-            if (!res) {
-                return { isAdmin: false };
-            }
-            return { isAdmin: true };
-        }
-        catch (error) {
-            console.error("Error inserting user:", error);
-            throw error;
-        }
+        return prisma.product.findUnique({ where: { id } });
     });
 }
-;
-function insertProduct(specialCategory, category, productName, description, fabric, color, price) {
+function getProductsByCategory(category) {
     return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const res = yield prismaA.product.create({
-                data: {
-                    category,
-                    productName,
-                    description,
-                    fabric,
-                    color,
-                    price,
-                },
-            });
-            return res;
-        }
-        catch (error) {
-            console.error("Error inserting product:", error);
-            throw error;
-        }
+        return prisma.product.findMany({ where: { category } });
     });
 }
-function getSarees() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const data = yield prismaA.product.findMany({
-                where: {
-                    category: "Saree",
-                },
-            });
-            return data;
-        }
-        catch (error) {
-            console.error("Error getting the request data: ", error);
-            throw error;
-        }
-    });
-}
-function getSalwaars() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const data = yield prismaA.product.findMany({
-                where: {
-                    category: "Salwaar",
-                },
-            });
-            return data;
-        }
-        catch (error) {
-            console.error("Error getting the request data: ", error);
-            throw error;
-        }
-    });
-}
-function getLehangas() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const data = yield prismaA.product.findMany({
-                where: {
-                    category: "Lehanga",
-                },
-            });
-            return data;
-        }
-        catch (error) {
-            console.error("Error getting the request data: ", error);
-            throw error;
-        }
-    });
-}
-routerA.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// Routes
+router.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, email, name } = req.body;
-    const inputValidation = adminSchema.safeParse({
-        username,
-        email,
-        name,
-    });
+    const inputValidation = adminSchema.safeParse({ username, email, name });
     if (!inputValidation.success) {
         return res.status(400).json({ msg: "Inputs are not valid" });
     }
@@ -225,90 +127,109 @@ routerA.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function
         res.status(201).json({ msg: "Admin created successfully", res: response });
     }
     catch (error) {
-        res.status(500).json({ msg: "Error creating admin" });
+        res.status(500).json({ msg: "Error creating admin", error: error.message });
     }
 }));
-routerA.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, email, name } = req.body;
-    const inputValidation = adminSchema.safeParse({
-        username,
-        email,
-        name,
-    });
+    const inputValidation = adminSchema.safeParse({ username, email, name });
     if (!inputValidation.success) {
         return res.status(400).json({ msg: "Inputs are not valid" });
     }
     try {
-        const response = yield checkAdmin(username, email, name);
-        if (response.isAdmin) {
-            res
-                .status(201)
-                .json({ msg: "Admin Verified Successfully", res: response });
+        const response = yield checkAdmin(email);
+        if (response) {
+            res.status(200).json({ msg: "Admin Verified Successfully", res: response });
         }
         else {
-            res
-                .status(400)
-                .json({ msg: "Admin Access Denied", res: response });
+            res.status(400).json({ msg: "Admin Access Denied" });
         }
     }
     catch (error) {
-        res.status(500).json({ msg: "Error Verifying admin" });
+        res.status(500).json({ msg: "Error Verifying admin", error: error.message });
     }
 }));
-routerA.get("/products/all", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const productsArr = yield getAllProducts();
-        if (productsArr) {
-            res.json(productsArr);
+router.post("/upload", (req, res) => {
+    upload(req, res, (err) => {
+        if (err) {
+            res.status(400).json({ msg: err.message });
+        }
+        else if (!req.files) {
+            res.status(400).json({ msg: "No file selected" });
         }
         else {
-            res.status(400).json({ error: "Invalid product ID" });
+            const filePaths = req.files.map(file => `/uploads/products/${file.filename}`);
+            res.status(200).json({
+                msg: "Files uploaded",
+                filePaths,
+            });
         }
-    }
-    catch (error) {
-        console.error("Error fetching products:", error);
-        res.status(500).send("Error fetching products");
-    }
-}));
-routerA.post("/products/addProducts", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { specialCategory, category, productName, description, fabric, color, price, } = req.body;
+    });
+});
+router.get("/products/all", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const newProduct = yield insertProduct(specialCategory, category, productName, description, fabric, color, price);
-        res
-            .status(201)
-            .json({ message: "Product added successfully", product: newProduct });
+        const products = yield getAllProducts();
+        res.json(products);
     }
     catch (error) {
-        console.error("Error adding product:", error);
-        res
-            .status(500)
-            .json({ message: "Error adding product", error: error.message });
+        res.status(500).json({ msg: "Error fetching products", error: error.message });
     }
 }));
-routerA.delete("/products/delete", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/products/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = parseInt(req.params.id);
+    try {
+        const product = yield getProductsById(id);
+        res.json(product);
+    }
+    catch (error) {
+        res.status(500).json({ msg: "Error fetching product", error: error.message });
+    }
+}));
+router.get("/products/category/:category", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const category = req.params.category;
+    try {
+        const products = yield getProductsByCategory(category);
+        res.json(products);
+    }
+    catch (error) {
+        res.status(500).json({ msg: "Error fetching products", error: error.message });
+    }
+}));
+router.post("/products/addProducts", upload, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const files = req.files;
+    const imageUrls = files.map(file => ({ url: `/uploads/products/${file.filename}` }));
+    const productData = Object.assign(Object.assign({}, req.body), { price: parseFloat(req.body.price), images: imageUrls });
+    console.log(productData);
+    const inputValidation = productSchema.safeParse(productData);
+    console.log(inputValidation);
+    if (!inputValidation.success) {
+        console.log(inputValidation.error.format());
+        return res.status(400).json({ msg: "Invalid product format" });
+    }
+    try {
+        const newProduct = yield insertProduct(productData);
+        res.status(201).json({ msg: "Product added successfully", product: newProduct });
+    }
+    catch (error) {
+        res.status(500).json({ msg: "Error adding product", error: error.message });
+    }
+}));
+router.delete("/products/delete", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.body;
     try {
         const deletedProduct = yield deleteProductById(parseInt(id));
-        if (!deletedProduct) {
-            res.status(400).json({ msg: "Invalid ID" });
-        }
-        res
-            .status(200)
-            .json({ msg: "product deleted successfully", product: deletedProduct });
+        res.status(200).json({ msg: "Product deleted successfully", product: deletedProduct });
     }
     catch (error) {
-        console.error("Error deleting product:", error);
-        res
-            .status(500)
-            .json({ message: "Error deleting product", error: error.message });
+        res.status(500).json({ msg: "Error deleting product", error: error.message });
     }
 }));
-routerA.put("/orders/*", (req, res) => {
+router.put("/orders/*", (req, res) => {
     // Implement orders update logic here
     res.send("Orders update endpoint");
 });
-routerA.get("/stats/*", (req, res) => {
+router.get("/stats/*", (req, res) => {
     // Implement stats retrieval logic here
     res.send("Stats endpoint");
 });
-exports.default = routerA;
+exports.default = router;

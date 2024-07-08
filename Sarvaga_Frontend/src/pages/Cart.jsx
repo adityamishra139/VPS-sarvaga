@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
-
+import axiosInstance from '../api/AxiosInstance';
 const CartPage = () => {
-  const axiosInstance = axios.create({
-    baseURL: "https://api.sarvagafashions.com/BE",
-  });
+
   const location = useLocation();
   const { cartId } = location.state || {};
   const [cartItems, setCartItems] = useState([]);

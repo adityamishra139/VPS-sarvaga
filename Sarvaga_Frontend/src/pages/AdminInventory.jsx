@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
-import axios from 'axios';
+import axiosInstance from '../api/AxiosInstance';
 import Card from '../components/Cards/Card';
 import { useAuth0 } from '@auth0/auth0-react';
 import PropagateLoader from 'react-spinners/PropagateLoader';
 function AdminInventory() {
   const [products, setProducts] = useState([]);
   const {isLoading} = useAuth0();
-const axiosInstance = axios.create({
-  baseURL: "https://api.sarvagafashions.com/BE",
-});
   useEffect(() => {
     const fetchProducts = async () => {
       try {

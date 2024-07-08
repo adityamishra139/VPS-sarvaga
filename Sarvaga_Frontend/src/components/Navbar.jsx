@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Logo2 from "../assets/logo2.png";
-import { IoMdSearch } from "react-icons/io";
 import { FaCartShopping } from "react-icons/fa6";
 import { useAuth0 } from "@auth0/auth0-react";
-import axios from "axios";
+import axiosInstance from '../api/AxiosInstance';
 
 const Navbar = () => {
-  const axiosInstance = axios.create({
-    baseURL: "https://api.sarvagafashions.com/BE",
-  });
   const { loginWithRedirect, logout, user, isAuthenticated } = useAuth0();
   async function checkAdminStatus() {
     try {

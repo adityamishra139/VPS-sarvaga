@@ -1,321 +1,239 @@
 import express, { Request, Response } from "express";
-import { string, z } from "zod";
-import adminMiddleware from "../Middlewares/adminMiddleware";
+import { z } from "zod";
 import { PrismaClient, Product } from "@prisma/client";
-import multer from 'multer';
-import path from 'path';
+import multer from "multer";
+import path from "path";
+
+const prisma = new PrismaClient();
+const router = express.Router();
+
+router.use(express.json());
+
+// Configure multer storage
 const storage = multer.diskStorage({
-  destination: "./../uploads/products/",
-  filename: function (req, file, cb) {
-    cb(
-      null,
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
-    );
+  destination: path.join(__dirname, "/../uploads/products/"),
+  filename: (req, file, cb) => {
+    cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
   },
 });
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 10000000 }, // 10MB limit
-  fileFilter: function (req, file, cb) {
-    checkFileType(file, cb);
-  },
-}).single("productImage");
-function checkFileType(file, cb) {
-  const filetypes = /jpeg|jpg|png|gif/;
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = filetypes.test(file.mimetype);
 
-  if (mimetype && extname) {
-    return cb(null, true);
-  } else {
-    cb("Error: Images Only!");
-  }
-}
-const routerA = express.Router();
-const prismaA = new PrismaClient();
-routerA.use(express.json());
+const upload = multer({
+  storage,
+  limits: { fileSize: 500000 }, // 500KB limit
+  fileFilter: (req, file, cb) => {
+    const filetypes = /jpeg|jpg|png|gif/;
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = filetypes.test(file.mimetype);
+
+    if (mimetype && extname) {
+      cb(null, true);
+    } else {
+      cb(new Error("Error: Images Only!"));
+    }
+  },
+}).array("productImage", 4);
+
+// Define validation schema
 const adminSchema = z.object({
   username: z.string(),
   email: z.string().email(),
-  name : z.string()
+  name: z.string(),
 });
 
-async function insertAdmin(
-  username: string,
-  email: string,
-  name: string
-): Promise<{
-  id: number;
-  username: string;
-  email: string;
-  name: string;
-}> {
-  try {
-    const res = await prismaA.admin.create({
-      data: {
-        username,
-        email,
-        name,
-      },
-    });
-    return res;
-  } catch (error) {
-    console.error("Error inserting user:", error);
-    throw error;
-  }
+const productSchema = z.object({
+  specialCategory: z.string().optional(),
+  category: z.string(),
+  productName: z.string(),
+  description: z.string(),
+  fabric: z.string(),
+  color: z.string(),
+  images: z.array(z.object({url:z.string()})).optional(),
+  price: z.number(),
+});
+
+// Admin functions
+async function insertAdmin(username: string, email: string, name: string) {
+  return prisma.admin.create({
+    data: { username, email, name },
+  });
+}
+async function checkAdmin(email: string) {
+  return prisma.admin.findFirst({ where: { email } });
 }
 
-async function getAllProducts():Promise<Product[] | null> {
-  try {
-    const product = await prismaA.product.findMany();
-    return product;
-  } catch (error) {
-    console.error("Error fetching product by ID:", error);
-    throw error;
-  }
+// Product functions
+async function getAllProducts(): Promise<Product[]> {
+  return prisma.product.findMany({
+    include: {
+      images: true,
+    },
+  });
 }
+
+async function insertProduct(data: {
+  specialCategory?: string;
+  category: string;
+  productName: string;
+  description: string;
+  fabric: string;
+  color: string;
+  images: { url: string }[],
+  price: number;
+}) {
+  return prisma.product.create({
+    data: {
+      specialCategory: data.specialCategory,
+      category: data.category,
+      productName: data.productName,
+      description: data.description,
+      fabric: data.fabric,
+      color: data.color,
+      price: data.price,
+      images: {
+        create: data.images,
+      },
+    },
+  });
+}
+
 async function deleteProductById(id: number): Promise<Product | null> {
-  try {
-    await prismaA.cartProduct.deleteMany({
-      where: {
-        productId: id,
-      },
-    });
-
-    const product = await prismaA.product.delete({
-      where: {
-        id,
-      },
-    });
-
-    if (!product) {
-      return null;
-    }
-
-    return product;
-  } catch (error) {
-    console.error("Error deleting product by ID:", error);
-    throw error;
-  }
-}
-routerA.post("/upload", async (req, res) => {
-  await upload(req, res, (err) => {
-    if (err) {
-      res.status(400).json({ msg: err });
-    } else {
-      if (req.file == undefined) {
-        res.status(400).json({ msg: "No file selected" });
-      } else {
-        res.status(200).json({
-          msg: "File uploaded",
-          filePath: `/uploads/products/${req.file.filename}`,
-        });
-      }
-    }
-  });
-});
-async function checkAdmin(username: string, email: string, name: string): Promise<{isAdmin:Boolean}> {
-  try {
-    const res = await prismaA.admin.findFirst({
-      where: {
-        email,
-      },
-    });
-    if (!res) {
-      return { isAdmin: false };
-    }
-    return { isAdmin: true };
-  } catch (error) {
-    console.error("Error inserting user:", error);
-    throw error;
-  }
-};
-
-async function insertProduct(
-  specialCategory:string,
-  category: string,
-  productName: string,
-  description: string,
-  fabric: string,
-  color: string,
-  price: number
-) {
-  try {
-    const res = await prismaA.product.create({
-      data: {
-        category,
-        productName,
-        description,
-        fabric,
-        color,
-        price,
-      },
-    });
-    return res;
-  } catch (error) {
-    console.error("Error inserting product:", error);
-    throw error;
-  }
-}
-async function getSarees(): Promise<any[]> {
-  try {
-    const data = await prismaA.product.findMany({
-      where: {
-        category: "Saree",
-      },
-    });
-    return data;
-  } catch (error) {
-    console.error("Error getting the request data: ", error);
-    throw error;
-  }
+  await prisma.cartProduct.deleteMany({ where: { productId: id } });
+  return prisma.product.delete({ where: { id } });
 }
 
-async function getSalwaars(): Promise<any[]> {
-  try {
-    const data = await prismaA.product.findMany({
-      where: {
-        category: "Salwaar",
-      },
-    });
-    return data;
-  } catch (error) {
-    console.error("Error getting the request data: ", error);
-    throw error;
-  }
+async function getProductsById(id: number): Promise<Product | null> {
+  return prisma.product.findUnique({ where: { id } });
 }
 
-async function getLehangas(): Promise<any[]> {
-  try {
-    const data = await prismaA.product.findMany({
-      where: {
-        category: "Lehanga",
-      },
-    });
-    return data;
-  } catch (error) {
-    console.error("Error getting the request data: ", error);
-    throw error;
-  }
+async function getProductsByCategory(category: string): Promise<Product[]> {
+  return prisma.product.findMany({ where: { category } });
 }
-routerA.post("/signup", async (req: Request, res: Response) => {
-  const { username, email, name } =
-    req.body;
 
-  const inputValidation = adminSchema.safeParse({
-    username,
-    email,
-    name,
-  });
-  if (!inputValidation.success) {
-    return res.status(400).json({ msg: "Inputs are not valid" });
-  }
-
-  try {
-    const response=await insertAdmin(
-      username,
-      email,
-      name,
-    );
-    res.status(201).json({ msg: "Admin created successfully" ,res : response});
-  } catch (error) {
-    res.status(500).json({ msg: "Error creating admin" });
-  }
-});
-
-routerA.post("/signin", async (req: Request, res: Response) => {
+// Routes
+router.post("/signup", async (req: Request, res: Response) => {
   const { username, email, name } = req.body;
-  const inputValidation = adminSchema.safeParse({
-    username,
-    email,
-    name,
-  });
+
+  const inputValidation = adminSchema.safeParse({ username, email, name });
   if (!inputValidation.success) {
     return res.status(400).json({ msg: "Inputs are not valid" });
   }
+
   try {
-    const response = await checkAdmin(username, email, name);
-    if (response.isAdmin) {
-      res
-        .status(201)
-        .json({ msg: "Admin Verified Successfully", res: response });
-    } else {
-      res
-        .status(400)
-        .json({ msg: "Admin Access Denied", res: response });
-    }
-  } catch (error) {
-    res.status(500).json({ msg: "Error Verifying admin" });
-  }
-});
-routerA.get("/products/all", async (req: Request, res: Response) => {
-  try {
-    const productsArr = await getAllProducts();
-    if (productsArr) {
-      res.json(productsArr);
-    } else {
-      res.status(400).json({ error: "Invalid product ID" });
-    }
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    res.status(500).send("Error fetching products");
-  }
-});
-routerA.post("/products/addProducts", async (req: Request, res: Response) => {
-  const {
-    specialCategory,
-    category,
-    productName,
-    description,
-    fabric,
-    color,
-    price,
-  } = req.body;
-  try {
-    const newProduct = await insertProduct(
-      specialCategory,
-      category,
-      productName,
-      description,
-      fabric,
-      color,
-      price
-    );
-    res
-      .status(201)
-      .json({ message: "Product added successfully", product: newProduct });
+    const response = await insertAdmin(username, email, name);
+    res.status(201).json({ msg: "Admin created successfully", res: response });
   } catch (error: any) {
-    console.error("Error adding product:", error);
-    res
-      .status(500)
-      .json({ message: "Error adding product", error: error.message });
+    res.status(500).json({ msg: "Error creating admin", error: error.message });
   }
 });
-routerA.delete("/products/delete", async (req: Request, res: Response) => {
+
+router.post("/signin", async (req: Request, res: Response) => {
+  const { username, email, name } = req.body;
+
+  const inputValidation = adminSchema.safeParse({ username, email, name });
+  if (!inputValidation.success) {
+    return res.status(400).json({ msg: "Inputs are not valid" });
+  }
+
+  try {
+    const response = await checkAdmin(email);
+    if (response) {
+      res.status(200).json({ msg: "Admin Verified Successfully", res: response });
+    } else {
+      res.status(400).json({ msg: "Admin Access Denied" });
+    }
+  } catch (error: any) {
+    res.status(500).json({ msg: "Error Verifying admin", error: error.message });
+  }
+});
+
+router.post("/upload", (req: Request, res: Response) => {
+  upload(req, res, (err) => {
+    if (err) {
+      res.status(400).json({ msg: err.message });
+    } else if (!req.files) {
+      res.status(400).json({ msg: "No file selected" });
+    } else {
+      const filePaths = (req.files as Express.Multer.File[]).map(file => `/uploads/products/${file.filename}`);
+      res.status(200).json({
+        msg: "Files uploaded",
+        filePaths,
+      });
+    }
+  });
+});
+
+router.get("/products/all", async (req: Request, res: Response) => {
+  try {
+    const products = await getAllProducts();
+    res.json(products);
+  } catch (error: any) {
+    res.status(500).json({ msg: "Error fetching products", error: error.message });
+  }
+});
+
+router.get("/products/:id", async (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  try {
+    const product = await getProductsById(id);
+    res.json(product);
+  } catch (error: any) {
+    res.status(500).json({ msg: "Error fetching product", error: error.message });
+  }
+});
+
+router.get("/products/category/:category", async (req: Request, res: Response) => {
+  const category = req.params.category;
+  try {
+    const products = await getProductsByCategory(category);
+    res.json(products);
+  } catch (error: any) {
+    res.status(500).json({ msg: "Error fetching products", error: error.message });
+  }
+});
+
+router.post("/products/addProducts", upload, async (req: Request, res: Response) => {
+  const files = req.files as Express.Multer.File[];
+  const imageUrls = files.map(file => ({ url: `/uploads/products/${file.filename}` }));
+
+  const productData = {
+    ...req.body,
+    price: parseFloat(req.body.price),
+    images: imageUrls,
+  };
+  console.log(productData);
+  const inputValidation = productSchema.safeParse(productData);
+  console.log(inputValidation);
+  if (!inputValidation.success) {
+    console.log(inputValidation.error.format());
+    return res.status(400).json({ msg: "Invalid product format" });
+  }
+
+  try {
+    const newProduct = await insertProduct(productData);
+    res.status(201).json({ msg: "Product added successfully", product: newProduct });
+  } catch (error: any) {
+    res.status(500).json({ msg: "Error adding product", error: error.message });
+  }
+});
+
+router.delete("/products/delete", async (req: Request, res: Response) => {
   const { id } = req.body;
   try {
     const deletedProduct = await deleteProductById(parseInt(id));
-    if (!deletedProduct) {
-      res.status(400).json({ msg: "Invalid ID" });
-    }
-    res
-      .status(200)
-      .json({ msg: "product deleted successfully", product: deletedProduct });
+    res.status(200).json({ msg: "Product deleted successfully", product: deletedProduct });
   } catch (error: any) {
-    console.error("Error deleting product:", error);
-    res
-      .status(500)
-      .json({ message: "Error deleting product", error: error.message });
+    res.status(500).json({ msg: "Error deleting product", error: error.message });
   }
 });
-routerA.put("/orders/*", (req: Request, res: Response) => {
+
+router.put("/orders/*", (req: Request, res: Response) => {
   // Implement orders update logic here
   res.send("Orders update endpoint");
 });
 
-routerA.get("/stats/*", (req: Request, res: Response) => {
+router.get("/stats/*", (req: Request, res: Response) => {
   // Implement stats retrieval logic here
   res.send("Stats endpoint");
 });
 
-export default routerA;
+export default router;

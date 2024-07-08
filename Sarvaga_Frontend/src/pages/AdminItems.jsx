@@ -8,6 +8,7 @@ import axios from 'axios';
 import ImageCompressor from 'image-compressor';
 import { useAuth0 } from '@auth0/auth0-react';
 import PropagateLoader from 'react-spinners/PropagateLoader';
+import axiosInstance from '../api/AxiosInstance';
 
 const AdminItems = () => {
   const axiosInstance = axios.create({

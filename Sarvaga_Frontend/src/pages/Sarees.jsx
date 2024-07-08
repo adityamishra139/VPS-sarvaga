@@ -2,12 +2,11 @@ import React, { useState, useEffect, lazy, Suspense } from "react";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import axios from 'axios';
+import axiosInstance from '../api/AxiosInstance';
 import PropagateLoader from "react-spinners/PropagateLoader";
 
 // Lazy load the Card component
 const Card = lazy(() => import("../components/Cards/Card"));
-
 export default function Sarees() {
   const [sarees, setSarees] = useState([]);
   const navigate = useNavigate();
@@ -19,7 +18,7 @@ export default function Sarees() {
 
   async function fetchSarees() {
     try {
-      const response = await axios.get("https://api.sarvagafashions.com/BE/user/products/Saree", {
+      const response = await axiosInstance.get("/user/products/Saree", {
         headers: {
           "Content-Type": "application/json"
         },
@@ -33,7 +32,6 @@ export default function Sarees() {
       setSarees(data);
     } catch (error) {
       console.error("Error fetching sarees:", error);
-      // Optionally, set an error state to inform the user
     }
   }
 
