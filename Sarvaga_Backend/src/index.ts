@@ -11,8 +11,12 @@ app.use(cors());
 
 // Middleware to parse JSON bodies
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, '/../uploads')));
-// Routes
+
+// Serve static files from the 'uploads/products' directory
+app.use('/public', express.static(path.join(__dirname, 'uploads/products')));
+console.log(path.join(__dirname, 'uploads/products'));
+
+// Define your routes
 app.use('/BE/admin', adminRoutes);
 app.use('/BE/user', userRoutes);
 

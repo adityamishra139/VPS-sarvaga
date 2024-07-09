@@ -13,8 +13,10 @@ const port = 5172;
 app.use((0, cors_1.default)());
 // Middleware to parse JSON bodies
 app.use(express_1.default.json());
-app.use('/uploads', express_1.default.static(path_1.default.join(__dirname, '/../uploads')));
-// Routes
+// Serve static files from the 'uploads/products' directory
+app.use('/public', express_1.default.static(path_1.default.join(__dirname, 'uploads/products')));
+console.log(path_1.default.join(__dirname, 'uploads/products'));
+// Define your routes
 app.use('/BE/admin', adminRoutes_1.default);
 app.use('/BE/user', userRoutes_1.default);
 // Start the server
