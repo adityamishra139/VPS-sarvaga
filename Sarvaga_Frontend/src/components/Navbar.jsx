@@ -21,8 +21,8 @@ const Navbar = () => {
           },
         }
       );
-      const admin = response.data.res.isAdmin;
-      if (admin) {
+      const admin = response.data.msg;
+      if (admin=="Admin Verified Successfully") {
         setIsAdmin(true); // Assuming setIsAdmin is a state setter function
       }
     } catch (error) {
