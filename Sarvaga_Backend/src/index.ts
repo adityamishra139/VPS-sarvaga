@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static files from the 'uploads/products' directory
-app.use('/public', express.static(path.join(__dirname, 'uploads/products')));
+app.use('/uploads/products', express.static(path.join(__dirname, 'uploads/products')));
 console.log(path.join(__dirname, 'uploads/products'));
 
 // Define your routes

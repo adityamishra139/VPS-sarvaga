@@ -14,7 +14,7 @@ app.use((0, cors_1.default)());
 // Middleware to parse JSON bodies
 app.use(express_1.default.json());
 // Serve static files from the 'uploads/products' directory
-app.use('/public', express_1.default.static(path_1.default.join(__dirname, 'uploads/products')));
+app.use('/uploads/products', express_1.default.static(path_1.default.join(__dirname, 'uploads/products')));
 console.log(path_1.default.join(__dirname, 'uploads/products'));
 // Define your routes
 app.use('/BE/admin', adminRoutes_1.default);

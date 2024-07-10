@@ -71,6 +71,9 @@ async function getProductsByCategory(
   try {
     const data = await prismaU.product.findMany({
       where: { category },
+      include: {
+        images: true,
+      },
     });
     return data;
   } catch (error) {

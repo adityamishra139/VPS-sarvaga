@@ -85,6 +85,9 @@ function getProductsByCategory(category) {
         try {
             const data = yield prismaU.product.findMany({
                 where: { category },
+                include: {
+                    images: true,
+                },
             });
             return data;
         }
