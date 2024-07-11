@@ -7,7 +7,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import image2 from '../../assets/sarees/hero and banner/jpeg-optimizer_hero2.jpg';
 import image1 from '../../assets/sarees/hero and banner/p2.png';
 import image3 from '../../assets/sarees/hero and banner/p1.png';
-
+import { useNavigate } from 'react-router-dom';
 const ImageList = [
   {
     id: 1,
@@ -35,6 +35,11 @@ const Hero = () => {
     AOS.refresh();
   }, []);
 
+  const navigate = useNavigate();
+  const handleClick=()=>{
+    navigate('/sarees');
+  }
+  
   const settings = {
     dots: true,
     arrows: true,
@@ -72,7 +77,7 @@ const Hero = () => {
                     {data.description}
                   </p>
                   <div className='mt-4'>
-                    <button className='bg-gradient-to-r from-yellow-400 to-yellow-600 text-gray-900 py-3 px-8 rounded-full shadow-lg font-semibold'>
+                    <button onClick={handleClick} className='bg-gradient-to-r from-yellow-400 to-yellow-600 text-gray-900 py-3 px-8 rounded-full shadow-lg font-semibold'>
                       Order Now
                     </button>
                   </div>

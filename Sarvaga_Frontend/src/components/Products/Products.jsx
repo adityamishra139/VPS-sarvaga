@@ -68,21 +68,23 @@ const Products = () => {
                 <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 place-items-center gap-8'>
                     {/* Card Sections */}
                     {ProductsData.map((data) => (
-                        <div onClick={()=>handleClick(data.id)}
-                            data-aos="fade-up"
-                            data-aos-delay={data.aosDelay}
-                            key={data.id}
-                            className="space-y-3 p-4 bg-white shadow-lg rounded-lg transition-transform duration-200 hover:scale-105">
-                            <img src={data.img} alt={data.title} className='h-[220px] w-full object-cover rounded-md' />
-                            <div>
-                                <h3 className="font-semibold text-lg">{data.title}</h3>
-                                <p className='text-sm text-gray-600'>{data.color}</p>
-                                <div className="flex items-center gap-1">
-                                    <FaStar className="text-yellow-400" />
-                                    <span>{data.rating}</span>
-                                </div>
-                            </div>
+                        <div
+                        onClick={() => handleClick(data.id)}
+                        data-aos="fade-up"
+                        data-aos-delay={data.aosDelay}
+                        key={data.id}
+                        className="space-y-3 p-4 bg-white shadow-lg rounded-lg transition-transform duration-200 hover:scale-105 hover:shadow-xl cursor-pointer"
+                      >
+                        <img src={data.img} alt={data.title} className="h-[220px] w-full object-cover rounded-md" />
+                        <div>
+                          <h3 className="font-semibold text-lg">{data.title}</h3>
+                          <p className="text-sm text-gray-600">{data.color}</p>
+                          <div className="flex items-center gap-1">
+                            <FaStar className="text-yellow-400" />
+                            <span>{data.rating}</span>
+                          </div>
                         </div>
+                      </div>
                     ))}
                 </div>
                 {/* View All Button */}

@@ -147,11 +147,12 @@ const Navbar = () => {
             </li>
             {isAdmin ? (
               <li className="relative group">
-                <p
+                <a
+                  href="/admineditItems"
                   className="font-semibold text-red-500 hover:text-purple-500"
                 >
                   Admin
-                </p>
+                </a>
                 <div className=" relative">
                   <ul className="bg-[#1B0022] absolute left-0 mt-2 w-48 bg-[#1B0022] shadow-lg rounded-md py-2 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <li>

@@ -5,10 +5,10 @@ import img3 from "../../assets/_DSC1439-1.JPG";
 import img4 from "../../assets/_DSC1528-1.JPG";
 import img5 from "../../assets/_DSC1535-1.JPG";
 import { FaStar } from "react-icons/fa6";
-
+import { useNavigate } from 'react-router-dom';
 const productsData = [
     {
-        id: 1,
+        id: 6,
         img: img1,
         title: "Chanderi Silk",
         rating: 4.0,
@@ -16,7 +16,7 @@ const productsData = [
         aosDelay: "0",
     },
     {
-        id: 2,
+        id: 7,
         img: img2,
         title: "Cotton",
         rating: 4.6,
@@ -24,7 +24,7 @@ const productsData = [
         aosDelay: "100",
     },
     {
-        id: 3,
+        id: 8,
         img: img3,
         title: "Cotton",
         rating: 4.2,
@@ -32,7 +32,7 @@ const productsData = [
         aosDelay: "200",
     },
     {
-        id: 4,
+        id: 9,
         img: img4,
         title: "Cotton",
         rating: 4.7,
@@ -40,7 +40,7 @@ const productsData = [
         aosDelay: "300",
     },
     {
-        id: 5,
+        id: 10,
         img: img5,
         title: "Cotton",
         rating: 4.9,
@@ -50,6 +50,12 @@ const productsData = [
 ];
 
 const Trending = () => {
+    const navigate = useNavigate();
+    const handleClick = (id)=>{
+        console.log(id)
+        navigate(`/description/${id}`)
+    }
+
     return (
         <div className='mt-14 mb-12 flex justify-center'>
             <div className="container bg-gray-100 py-10 px-5">
@@ -64,20 +70,22 @@ const Trending = () => {
                     {/* Card Sections */}
                     {productsData.map((data) => (
                         <div
-                            data-aos="fade-up"
-                            data-aos-delay={data.aosDelay}
-                            key={data.id}
-                            className="space-y-3 p-4 bg-white shadow-lg rounded-lg transition-transform duration-200 hover:scale-105">
-                            <img src={data.img} alt={data.title} className='h-[220px] w-full object-cover rounded-md' />
-                            <div>
-                                <h3 className="font-semibold text-lg">{data.title}</h3>
-                                <p className='text-sm text-gray-600'>{data.author}</p>
-                                <div className="flex items-center gap-1">
-                                    <FaStar className="text-yellow-400" />
-                                    <span>{data.rating}</span>
-                                </div>
-                            </div>
+                        onClick={() => handleClick(data.id)}
+                        data-aos="fade-up"
+                        data-aos-delay={data.aosDelay}
+                        key={data.id}
+                        className="space-y-3 p-4 bg-white shadow-lg rounded-lg transition-transform duration-200 hover:scale-105 hover:shadow-xl cursor-pointer"
+                      >
+                        <img src={data.img} alt={data.title} className="h-[220px] w-full object-cover rounded-md" />
+                        <div>
+                          <h3 className="font-semibold text-lg">{data.title}</h3>
+                          <p className="text-sm text-gray-600">{data.author}</p>
+                          <div className="flex items-center gap-1">
+                            <FaStar className="text-yellow-400" />
+                            <span>{data.rating}</span>
+                          </div>
                         </div>
+                      </div>
                     ))}
                 </div>
                 <div className='flex justify-center mt-10'>

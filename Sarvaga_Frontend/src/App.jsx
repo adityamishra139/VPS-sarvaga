@@ -34,7 +34,7 @@ const App = () => {
           <Route path="/admineditItems" element={<AdminItems></AdminItems>}></Route>
           <Route path="/admininventory" element={<AdminInventory></AdminInventory>}></Route>
           <Route path="/adminorders" element={<AdminOrders></AdminOrders>}></Route>
-          <Route path="/useraboutus" element={<Aboutus></Aboutus>}></Route>
+          <Route path="/user/aboutus" element={<Aboutus></Aboutus>}></Route>
           <Route
             path="/home"
             element={<Home Authenticated={isAuthenticated}></Home>}
