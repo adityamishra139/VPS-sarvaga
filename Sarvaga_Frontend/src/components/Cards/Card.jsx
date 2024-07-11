@@ -21,6 +21,8 @@ const Card = ({ product }) => {
         <img 
         src={`http://localhost:5172${product.images[0].url}`}
         ></img>
+        <img src="" alt={product.productName} className="max-w-full max-h-full" />
+       {console.log(product.images[0].url.toString())}
       </div>
       <div className="px-6 py-4">
         <div className="font-bold text-xl mb-2 text-dark-blue">{product.productName}</div>

@@ -70,8 +70,10 @@ async function getProductsByCategory(
 ): Promise<Product[] | null> {
   try {
     const data = await prismaU.product.findMany({
-      where: { category},
-      include : {images:true}
+      where: { category },
+      include: {
+        images: true,
+      },
     });
     return data;
   } catch (error) {
