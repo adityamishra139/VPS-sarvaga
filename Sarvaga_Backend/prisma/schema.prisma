@@ -31,6 +31,7 @@ model Product {
   fabric          String
   color           String
   price           Float
+  productCode     String
   images          ProductImage[]
   cartProducts    CartProduct[]
 }
