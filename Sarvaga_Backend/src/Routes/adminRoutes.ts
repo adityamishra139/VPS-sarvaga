@@ -108,6 +108,9 @@ async function deleteProductById(id: number): Promise<Product | null> {
     await prisma.cartProduct.deleteMany({
       where: { productId: id },
     });
+    await prisma.productImage.deleteMany({
+      where:{productId:id}
+    });
     return await prisma.product.delete({
       where: { id },
     });
