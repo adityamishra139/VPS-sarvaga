@@ -5,15 +5,11 @@ import Card from '../components/Cards/CardAdmin';
 import Navbar from '../components/Navbar';
 import ConfirmDialog from '../components/ConfirmDialog';
 import axios from 'axios';
-import ImageCompressor from 'image-compressor';
 import { useAuth0 } from '@auth0/auth0-react';
 import PropagateLoader from 'react-spinners/PropagateLoader';
 import axiosInstance from '../api/AxiosInstance';
 
 const AdminItems = () => {
-  const axiosInstance = axios.create({
-    baseURL: "https://api.sarvagafashions.com/BE",
-  });
   const { isLoading } = useAuth0();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -35,7 +31,7 @@ const AdminItems = () => {
     };
 
     fetchProducts();
-  }, [axiosInstance]);
+  }, []);
 
   const openModal = (product = null) => {
     setSelectedFiles([]);
@@ -47,34 +43,28 @@ const AdminItems = () => {
   const closeModal = () => {
     setModalIsOpen(false);
     setSelectedFiles([]);
+    filePreviews.forEach(url => URL.revokeObjectURL(url));
     setFilePreviews([]);
   };
 
-  const handleDrop = useCallback(async (acceptedFiles) => {
+  const handleDrop = useCallback((acceptedFiles) => {
+    console.log("Files dropped:", acceptedFiles);
+
     const uniqueFiles = acceptedFiles.filter(
       (file) => !selectedFiles.some((selectedFile) => selectedFile.name === file.name)
     );
 
-    const compressedFiles = await Promise.all(uniqueFiles.map(async (file) => {
-      const compressedFile = await new ImageCompressor().compress(file, {
-        quality: 0.8,
-        maxWidth: 800,
-      });
-      return compressedFile;
-    }));
+    console.log("Unique files:", uniqueFiles);
 
-    const newPreviews = compressedFiles.map(file => URL.createObjectURL(file));
-    setSelectedFiles(prevFiles => [...prevFiles, ...compressedFiles]);
+    const newPreviews = uniqueFiles.map(file => URL.createObjectURL(file));
+    setSelectedFiles(prevFiles => [...prevFiles, ...uniqueFiles]);
     setFilePreviews(prevPreviews => [...prevPreviews, ...newPreviews]);
   }, [selectedFiles]);
 
   const handleDelete = (index) => {
-    const updatedFiles = [...selectedFiles];
-    updatedFiles.splice(index, 1);
+    const updatedFiles = selectedFiles.filter((_, i) => i !== index);
+    const updatedPreviews = filePreviews.filter((_, i) => i !== index);
     setSelectedFiles(updatedFiles);
-
-    const updatedPreviews = [...filePreviews];
-    updatedPreviews.splice(index, 1);
     setFilePreviews(updatedPreviews);
   };
 
@@ -106,7 +96,7 @@ const AdminItems = () => {
       color: e.target.color.value,
       price: parseFloat(e.target.price.value),
       category,
-      images: selectedFiles.map(file => URL.createObjectURL(file))
+      images: selectedFiles.length ? selectedFiles.map(file => URL.createObjectURL(file)) : editProduct.images
     };
 
     const updatedProducts = products.map((product, index) =>
@@ -210,48 +200,65 @@ const AdminItems = () => {
                       <input type="text" name="color" placeholder="Color" className="mb-4 p-2 border border-gray-300 rounded w-full" required />
                       <label htmlFor="price" className="block text-gray-700 font-semibold mb-2">Price:</label>
                       <input type="number" step="0.01" name="price" placeholder="Price" className="mb-4 p-2 border border-gray-300 rounded w-full" required />
-                      <div className="mb-4">
-                        <div
-                          {...getRootProps()}
-                          className={`border-4 border-dashed p-20 text-center ${isDragActive ? 'border-green-500' : 'border-gray-300'} rounded-lg`}
-                        >
-                          <input {...getInputProps()} />
-                          {isDragActive ? (
-                            <p className="text-lg font-semibold text-green-500">Drop the files here ...</p>
-                          ) : (
-                            <p className="text-lg font-semibold text-gray-500">Drag 'n' drop some files here, or click to select files</p>
-                          )}
-                        </div>
-                        <div className="flex flex-wrap mt-4">
+                      <div
+                        {...getRootProps()}
+                        className={`border-4 border-dashed p-20 mb-4 text-center ${isDragActive ? 'border-green-500' : 'border-gray-300'} rounded-lg`}
+                      >
+                        <input {...getInputProps()} />
+                        {isDragActive ? (
+                          <p className="text-lg font-semibold text-green-500">Drop the files here...</p>
+                        ) : (
+                          <p className="text-lg font-semibold text-gray-500">Drag and drop images here, or click to select files</p>
+                        )}
+                      </div>
+                      {filePreviews.length > 0 && (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
                           {filePreviews.map((preview, index) => (
-                            <div key={index} className="relative w-24 h-24 m-2 border border-gray-300 rounded">
-                              <img src={preview} alt={`preview-${index}`} className="object-cover w-full h-full rounded" />
+                            <div key={index} className="relative border border-gray-300 rounded-lg overflow-hidden">
+                              <img
+                                src={preview}
+                                alt="Selected"
+                                className="w-full h-32 object-contain"
+                              />
                               <button
+                                type="button"
+                                className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded"
                                 onClick={() => handleDelete(index)}
-                                className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
                               >
-                                &times;
+                                Delete
                               </button>
+                              <p className="text-center text-sm mt-2">{selectedFiles[index].name}</p>
                             </div>
                           ))}
                         </div>
-                      </div>
-                      <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Add Product</button>
+                      )}
+                      <button
+                        type="submit"
+                        className="bg-blue-400 text-white px-4 py-2 rounded"
+                      >
+                        Upload
+                      </button>
                     </form>
                   </>
                 ) : (
                   <>
                     <h2 className="text-xl font-bold mb-4">Edit Product</h2>
                     <form onSubmit={handleEditSubmit}>
+                      {editProduct.images && editProduct.images.length > 0 && (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
+                          {editProduct.images.map((image, index) => (
+                            <div key={index} className="relative border border-gray-300 rounded-lg overflow-hidden">
+                              <img
+                                src={image}
+                                alt="Product"
+                                className="w-full h-32 object-contain"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       <label htmlFor="productName" className="block text-gray-700 font-semibold mb-2">Product Name:</label>
-                      <input
-                        type="text"
-                        name="productName"
-                        placeholder="Product Name"
-                        className="mb-4 p-2 border border-gray-300 rounded w-full"
-                        defaultValue={editProduct.productName}
-                        required
-                      />
+                      <input type="text" name="productName" placeholder="Product Name" defaultValue={editProduct.productName} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
                       <div className="mb-4">
                         <label htmlFor="category" className="block text-gray-700 font-semibold mb-2">Category:</label>
                         <select
@@ -268,68 +275,19 @@ const AdminItems = () => {
                         </select>
                       </div>
                       <label htmlFor="description" className="block text-gray-700 font-semibold mb-2">Product Description:</label>
-                      <textarea
-                        name="description"
-                        placeholder="Description"
-                        className="mb-4 p-2 border border-gray-300 rounded w-full"
-                        defaultValue={editProduct.description}
-                        required
-                      />
+                      <textarea name="description" placeholder="Description" defaultValue={editProduct.description} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
                       <label htmlFor="fabric" className="block text-gray-700 font-semibold mb-2">Fabric:</label>
-                      <input
-                        type="text"
-                        name="fabric"
-                        placeholder="Fabric"
-                        className="mb-4 p-2 border border-gray-300 rounded w-full"
-                        defaultValue={editProduct.fabric}
-                        required
-                      />
+                      <input type="text" name="fabric" placeholder="Fabric" defaultValue={editProduct.fabric} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
                       <label htmlFor="color" className="block text-gray-700 font-semibold mb-2">Color:</label>
-                      <input
-                        type="text"
-                        name="color"
-                        placeholder="Color"
-                        className="mb-4 p-2 border border-gray-300 rounded w-full"
-                        defaultValue={editProduct.color}
-                        required
-                      />
+                      <input type="text" name="color" placeholder="Color" defaultValue={editProduct.color} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
                       <label htmlFor="price" className="block text-gray-700 font-semibold mb-2">Price:</label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        name="price"
-                        placeholder="Price"
-                        className="mb-4 p-2 border border-gray-300 rounded w-full"
-                        defaultValue={editProduct.price}
-                        required
-                      />
-                      <div className="mb-4">
-                        <div
-                          {...getRootProps()}
-                          className={`border-4 border-dashed p-20 text-center ${isDragActive ? 'border-green-500' : 'border-gray-300'} rounded-lg`}
-                        >
-                          <input {...getInputProps()} />
-                          {isDragActive ? (
-                            <p className="text-lg font-semibold text-green-500">Drop the files here ...</p>
-                          ) : (
-                            <p className="text-lg font-semibold text-gray-500">Drag 'n' drop some files here, or click to select files</p>
-                          )}
-                        </div>
-                        <div className="flex flex-wrap mt-4">
-                          {filePreviews.map((preview, index) => (
-                            <div key={index} className="relative w-24 h-24 m-2 border border-gray-300 rounded">
-                              <img src={preview} alt={`preview-${index}`} className="object-cover w-full h-full rounded" />
-                              <button
-                                onClick={() => handleDelete(index)}
-                                className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
-                              >
-                                &times;
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                      <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Save Changes</button>
+                      <input type="number" step="0.01" name="price" placeholder="Price" defaultValue={editProduct.price} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+                      <button
+                        type="submit"
+                        className="bg-green-500 text-white px-4 py-2 rounded"
+                      >
+                        Save
+                      </button>
                     </form>
                   </>
                 )}
@@ -339,6 +297,7 @@ const AdminItems = () => {
               isOpen={confirmDialogIsOpen}
               onRequestClose={closeConfirmDialog}
               onConfirm={handleConfirmDelete}
+              message="Are you sure you want to delete this product?"
             />
           </div>
         </>
