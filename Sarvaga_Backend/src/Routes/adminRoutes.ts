@@ -97,9 +97,29 @@ async function insertProduct(data: {
 }
 
 async function deleteProductById(id: number): Promise<Product | null> {
-  await prisma.cartProduct.deleteMany({ where: { productId: id } });
-  return prisma.product.delete({ where: { id } });
+  try {
+    const product = await prisma.product.findUnique({
+      where: { id },
+    });
+
+    if (!product) {
+      throw new Error(`Product with id ${id} does not exist.`);
+    }
+    await prisma.cartProduct.deleteMany({
+      where: { productId: id },
+    });
+    await prisma.productImage.deleteMany({
+      where:{productId:id}
+    });
+    return await prisma.product.delete({
+      where: { id },
+    });
+  } catch (error:any) {
+    console.error("Error deleting product:", error);
+    throw new Error(`Error deleting product: ${error.message}`);
+  }
 }
+
 
 async function getProductsById(id: number): Promise<Product | null> {
   return prisma.product.findUnique({ where: { id } });
@@ -218,7 +238,6 @@ router.post("/products/addProducts", upload, async (req: Request, res: Response)
 
 router.delete("/products/delete", async (req: Request, res: Response) => {
   let { id } = req.body;
-  id=parseInt(id);
   try {
     const deletedProduct = await deleteProductById(parseInt(id));
     res.status(200).json({ msg: "Product deleted successfully", product: deletedProduct });
