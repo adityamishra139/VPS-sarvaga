@@ -217,7 +217,8 @@ router.post("/products/addProducts", upload, async (req: Request, res: Response)
 });
 
 router.delete("/products/delete", async (req: Request, res: Response) => {
-  const { id } = req.body;
+  let { id } = req.body;
+  id=parseInt(id);
   try {
     const deletedProduct = await deleteProductById(parseInt(id));
     res.status(200).json({ msg: "Product deleted successfully", product: deletedProduct });
