@@ -101,8 +101,27 @@ function insertProduct(data) {
 }
 function deleteProductById(id) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield prisma.cartProduct.deleteMany({ where: { productId: id } });
-        return prisma.product.delete({ where: { id } });
+        try {
+            const product = yield prisma.product.findUnique({
+                where: { id },
+            });
+            if (!product) {
+                throw new Error(`Product with id ${id} does not exist.`);
+            }
+            yield prisma.cartProduct.deleteMany({
+                where: { productId: id },
+            });
+            yield prisma.productImage.deleteMany({
+                where: { productId: id }
+            });
+            return yield prisma.product.delete({
+                where: { id },
+            });
+        }
+        catch (error) {
+            console.error("Error deleting product:", error);
+            throw new Error(`Error deleting product: ${error.message}`);
+        }
     });
 }
 function getProductsById(id) {
@@ -215,7 +234,7 @@ router.post("/products/addProducts", upload, (req, res) => __awaiter(void 0, voi
     }
 }));
 router.delete("/products/delete", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.body;
+    let { id } = req.body;
     try {
         const deletedProduct = yield deleteProductById(parseInt(id));
         res.status(200).json({ msg: "Product deleted successfully", product: deletedProduct });
