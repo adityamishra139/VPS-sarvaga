@@ -25,7 +25,6 @@ const Card = ({ product }) => {
           <p className="text-gray-700 text-base"><span className="font-bold">Fabric: </span> {product.fabric}</p>
           <p className="text-gray-700 text-base"><span className="font-bold">Color: </span> {product.color}</p>
         </div>
-        <p className="text-gray-700 text-base mt-2"><span className="font-bold">Product Code: </span> {product.productCode}</p>
         <p className="text-rich-burgundy text-lg font-bold mt-4">{product.price ? `$${product.price}` : 'Price not available'}</p>
       </div>
     </div>
