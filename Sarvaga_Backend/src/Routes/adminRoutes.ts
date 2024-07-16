@@ -47,8 +47,9 @@ const productSchema = z.object({
   description: z.string(),
   fabric: z.string(),
   color: z.string(),
-  images: z.array(z.object({url:z.string()})).optional(),
+  images: z.array(z.object({ url: z.string() })).optional(),
   price: z.number(),
+  productCode: z.string()
 });
 
 // Admin functions
@@ -77,6 +78,7 @@ async function insertProduct(data: {
   description: string;
   fabric: string;
   color: string;
+  productCode:string;
   images: { url: string }[],
   price: number;
 }) {
@@ -89,6 +91,7 @@ async function insertProduct(data: {
       fabric: data.fabric,
       color: data.color,
       price: data.price,
+      productCode:data.productCode,
       images: {
         create: data.images,
       },
@@ -109,12 +112,12 @@ async function deleteProductById(id: number): Promise<Product | null> {
       where: { productId: id },
     });
     await prisma.productImage.deleteMany({
-      where:{productId:id}
+      where: { productId: id }
     });
     return await prisma.product.delete({
       where: { id },
     });
-  } catch (error:any) {
+  } catch (error: any) {
     console.error("Error deleting product:", error);
     throw new Error(`Error deleting product: ${error.message}`);
   }
