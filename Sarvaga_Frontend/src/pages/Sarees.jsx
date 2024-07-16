@@ -7,6 +7,7 @@ import PropagateLoader from "react-spinners/PropagateLoader";
 
 // Lazy load the Card component
 const Card = lazy(() => import("../components/Cards/Card"));
+
 export default function Sarees() {
   const [sarees, setSarees] = useState([]);
   const navigate = useNavigate();
@@ -43,16 +44,21 @@ export default function Sarees() {
     <div className="bg-gray-50 min-h-screen">
       {isLoading ? (
         <div className="flex items-center justify-center min-h-screen">
-          <PropagateLoader color='#A855F7' />
+          <PropagateLoader color="#A855F7" />
         </div>
       ) : (
         <>
           <Navbar />
-          <div className="container mx-auto px-4 mt-14">
-            <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><PropagateLoader color='#A855F7' /></div>}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="container mx-auto px-4 mt-16">
+            <h1 className="text-5xl font-bold text-center mb-12 text-gray-800">Our Exquisite Saree Collection</h1>
+            <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><PropagateLoader color="#A855F7" /></div>}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                 {sarees.map((saree) => (
-                  <div key={saree.id} onClick={() => handleCardClick(saree.id)}>
+                  <div
+                    key={saree.id}
+                    onClick={() => handleCardClick(saree.id)}
+                    className="bg-white shadow-lg rounded-lg overflow-hidden transform hover:scale-105 transition duration-300 cursor-pointer"
+                  >
                     <Card product={saree} />
                   </div>
                 ))}
