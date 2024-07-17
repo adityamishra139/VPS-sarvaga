@@ -7,5 +7,10 @@ export default defineConfig({
   assetsInclude: ['**/*.JPG'],
   optimizeDeps: {
     exclude: ['js-big-decimal']
-  }
+  },
+  server: {
+    watch: {
+      usePolling: true,
+    },
+  },
 })

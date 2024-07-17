@@ -1,6 +1,5 @@
 import React, { useState, useEffect, lazy, Suspense } from "react";
 import Navbar from "../components/Navbar";
-import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import axiosInstance from '../api/AxiosInstance';
 import PropagateLoader from "react-spinners/PropagateLoader";
@@ -10,7 +9,6 @@ const Card = lazy(() => import("../components/Cards/Card"));
 
 export default function Sarees() {
   const [sarees, setSarees] = useState([]);
-  const navigate = useNavigate();
   const { isLoading } = useAuth0();
 
   useEffect(() => {
@@ -36,10 +34,6 @@ export default function Sarees() {
     }
   }
 
-  const handleCardClick = (id) => {
-    navigate(`/description/${id}`);
-  };
-
   return (
     <div className="bg-gray-50 min-h-screen">
       {isLoading ? (
@@ -54,11 +48,7 @@ export default function Sarees() {
             <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><PropagateLoader color="#A855F7" /></div>}>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                 {sarees.map((saree) => (
-                  <div
-                    key={saree.id}
-                    onClick={() => handleCardClick(saree.id)}
-                    className="bg-white shadow-lg rounded-lg overflow-hidden transform hover:scale-105 transition duration-300 cursor-pointer"
-                  >
+                  <div key={saree.id}>
                     <Card product={saree} />
                   </div>
                 ))}
