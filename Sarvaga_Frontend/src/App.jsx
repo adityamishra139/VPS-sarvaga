@@ -67,7 +67,7 @@ const App = () => {
           <Route
             path="/description/:id"
             element={
-              <Description Authenticated={isAuthenticated}></Description>
+              <Description  Authenticated={isAuthenticated}></Description>
             }
           ></Route>
           <Route

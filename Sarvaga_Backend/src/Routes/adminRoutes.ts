@@ -78,7 +78,7 @@ async function insertProduct(data: {
   description: string;
   fabric: string;
   color: string;
-  productCode:string;
+  productCode: string;
   images: { url: string }[],
   price: number;
 }) {
@@ -91,7 +91,7 @@ async function insertProduct(data: {
       fabric: data.fabric,
       color: data.color,
       price: data.price,
-      productCode:data.productCode,
+      productCode: data.productCode,
       images: {
         create: data.images,
       },
@@ -125,7 +125,11 @@ async function deleteProductById(id: number): Promise<Product | null> {
 
 
 async function getProductsById(id: number): Promise<Product | null> {
-  return prisma.product.findUnique({ where: { id } });
+  return prisma.product.findUnique({
+    where: { id }, include: {
+      images: true,
+    },
+  });
 }
 
 async function getProductsByCategory(category: string): Promise<Product[]> {

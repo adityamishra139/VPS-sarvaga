@@ -128,7 +128,11 @@ function deleteProductById(id) {
 }
 function getProductsById(id) {
     return __awaiter(this, void 0, void 0, function* () {
-        return prisma.product.findUnique({ where: { id } });
+        return prisma.product.findUnique({
+            where: { id }, include: {
+                images: true,
+            },
+        });
     });
 }
 function getProductsByCategory(category) {

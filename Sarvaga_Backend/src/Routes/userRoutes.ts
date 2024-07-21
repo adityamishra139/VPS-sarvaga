@@ -57,6 +57,7 @@ async function getProductByID(id: number): Promise<Product | null> {
   try {
     const product = await prismaU.product.findUnique({
       where: { id },
+      include: { images: true },
     });
     return product;
   } catch (error) {

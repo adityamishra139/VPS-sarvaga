@@ -71,6 +71,7 @@ function getProductByID(id) {
         try {
             const product = yield prismaU.product.findUnique({
                 where: { id },
+                include: { images: true },
             });
             return product;
         }
