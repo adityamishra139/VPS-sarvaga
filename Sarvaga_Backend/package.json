@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "prestart": "tsc -b",
+    "prestart": "npm i && tsc -b",
     "start": "npx nodemon dist/index.js"
   },
   "dependencies": {
