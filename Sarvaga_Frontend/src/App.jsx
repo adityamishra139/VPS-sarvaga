@@ -15,6 +15,7 @@ import AdminItems from './pages/AdminItems';
 import AdminInventory from './pages/AdminInventory';
 import AdminOrders from './pages/AdminOrders';
 import Aboutus from './pages/Aboutus';
+import Cart from './components/cart/Cart';
 const App = () => {
   React.useEffect(()=>{
     AOS.init({
@@ -72,7 +73,7 @@ const App = () => {
           <Route
             path="/cart"
             element={
-              <CartPage Authenticated={isAuthenticated}></CartPage>
+              <Cart Authenticated={isAuthenticated}></Cart>
             }
           ></Route>
         </Routes>
