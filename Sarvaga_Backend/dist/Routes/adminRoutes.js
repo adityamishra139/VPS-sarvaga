@@ -57,6 +57,7 @@ const productSchema = zod_1.z.object({
     color: zod_1.z.string(),
     images: zod_1.z.array(zod_1.z.object({ url: zod_1.z.string() })).optional(),
     price: zod_1.z.number(),
+    productCode: zod_1.z.string()
 });
 // Admin functions
 function insertAdmin(username, email, name) {
@@ -92,6 +93,7 @@ function insertProduct(data) {
                 fabric: data.fabric,
                 color: data.color,
                 price: data.price,
+                productCode: data.productCode,
                 images: {
                     create: data.images,
                 },
