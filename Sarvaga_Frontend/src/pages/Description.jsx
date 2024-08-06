@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams , useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/AxiosInstance';
 import Navbar from '../components/Navbar';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import PropagateLoader from 'react-spinners/PropagateLoader';
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Description = () => {
+
+  const navigate = useNavigate();
+
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState('');
   const [quantity, setQuantity] = useState(1);
-
+  const {isAuthenticated} = useAuth0();
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -28,7 +33,8 @@ const Description = () => {
   }, [id]);
 
   if (!product) {
-    return <div className="text-center py-20">Loading...</div>;
+    return<div className="flex items-center justify-center min-h-screen">
+        <PropagateLoader color='#A855F7' /> </div>;
   }
 
   const handleImageClick = (url) => {
@@ -50,6 +56,14 @@ const Description = () => {
     slidesToShow: 1,
     slidesToScroll: 1
   };
+
+  const handleAdd2Cart = ()=>{
+    if(isAuthenticated){
+       navigate(`/cart/${id}/${quantity}`)
+    }else{
+      alert("Login to add product into cart")
+    }
+  }
 
   return (
     <>
@@ -86,7 +100,7 @@ const Description = () => {
                 className="w-20 p-2 border border-gray-300 rounded text-lg"
               />
             </div>
-            <button className="mt-6 bg-blue-500 text-white py-3 px-6 rounded-lg text-lg font-semibold hover:bg-blue-600 transition duration-300">Add to Cart</button>
+            <button onClick={()=>handleAdd2Cart()} className="mt-6 bg-blue-500 text-white py-3 px-6 rounded-lg text-lg font-semibold hover:bg-blue-600 transition duration-300">Add to Cart</button>
           </div>
         </div>
       </div>

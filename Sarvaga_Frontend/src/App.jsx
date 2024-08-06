@@ -71,7 +71,7 @@ const App = () => {
             }
           ></Route>
           <Route
-            path="/cart"
+            path="/cart/:id/:quantity"
             element={
               <Cart Authenticated={isAuthenticated}></Cart>
             }

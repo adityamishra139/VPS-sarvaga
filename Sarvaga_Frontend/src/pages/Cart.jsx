@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import { cartItems } from '../../cartItems'; // Assuming cartItems is an array of products added to the cart
-
+import { cartItems } from '../../cartItems'; 
 const AddToCart = () => {
   const [items, setItems] = useState(cartItems);
 
@@ -56,7 +55,7 @@ const AddToCart = () => {
                       className="px-3 py-1 rounded-lg bg-red-500 text-white hover:bg-red-600 transition duration-300"
                       onClick={() => handleRemoveItem(index)}
                     >
-                      Remove
+                      hi
                     </button>
                   </div>
                 ))}
