@@ -19,7 +19,7 @@ const AdminItems = () => {
   const [confirmDialogIsOpen, setConfirmDialogIsOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
   const [category, setCategory] = useState('Saree');
-
+  const [id,setId] = useState(0);
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -68,9 +68,10 @@ const AdminItems = () => {
     setFilePreviews(updatedPreviews);
   };
 
-  const openConfirmDialog = (index) => {
+  const openConfirmDialog = (index,id) => {
     setProductToDelete(index);
     setConfirmDialogIsOpen(true);
+    setId(id);
   };
 
   const closeConfirmDialog = () => {
@@ -78,10 +79,18 @@ const AdminItems = () => {
     setConfirmDialogIsOpen(false);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async() => {
     if (productToDelete !== null) {
       const updatedProducts = products.filter((_, i) => i !== productToDelete);
       setProducts(updatedProducts);
+    }
+    try {
+      const response = await axiosInstance.delete("/admin/products/delete", {
+        data: { id: id }
+      });
+      console.log(response);
+    } catch (error) {
+      console.error("Error deleting product:", error);
     }
     closeConfirmDialog();
   };
@@ -165,7 +174,7 @@ const AdminItems = () => {
                   key={index}
                   product={product}
                   onEdit={() => openModal(index)}
-                  onDelete={() => openConfirmDialog(index)}
+                  onDelete={() => openConfirmDialog(index,product.id)}
                 />
               ))}
             </div>

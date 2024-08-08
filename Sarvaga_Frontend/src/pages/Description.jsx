@@ -59,7 +59,7 @@ const Description = () => {
 
   const handleAdd2Cart = ()=>{
     if(isAuthenticated){
-       navigate(`/cart/${id}/${quantity}`)
+      alert("Added to Cart")
     }else{
       alert("Login to add product into cart")
     }

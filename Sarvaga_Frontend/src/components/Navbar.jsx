@@ -148,7 +148,7 @@ const Navbar = () => {
             {isAdmin ? (
               <li className="relative group">
                 <a
-                  href="/admineditItems"
+                  
                   className="font-semibold text-red-500 hover:text-purple-500"
                 >
                   Admin
