@@ -136,6 +136,7 @@ async function getProductsByCategory(category: string): Promise<Product[]> {
   return prisma.product.findMany({ where: { category } });
 }
 
+
 // Routes
 router.post("/signup", async (req: Request, res: Response) => {
   const { username, email, name } = req.body;
@@ -243,6 +244,11 @@ router.post("/products/addProducts", upload, async (req: Request, res: Response)
   }
 });
 
+router.post("/products/update",async(req:Request , res:Response)=>{
+  let {id,price,productCode,color,fabric,description,productName,category} = req.body;
+
+})
+
 router.delete("/products/delete", async (req: Request, res: Response) => {
   let { id } = req.body;
   try {
@@ -262,5 +268,6 @@ router.get("/stats/*", (req: Request, res: Response) => {
   // Implement stats retrieval logic here
   res.send("Stats endpoint");
 });
+
 
 export default router;
