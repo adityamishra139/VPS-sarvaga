@@ -307,37 +307,6 @@ const AdminItems = () => {
                           ))}
                         </div>
                       )}
-                      <label htmlFor="productName" className="block text-gray-700 font-semibold mb-2">Product Name:</label>
-                      <input type="text" name="productName" placeholder="Product Name" defaultValue={editProduct.productName} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
-                      <div className="mb-4">
-                        <label htmlFor="category" className="block text-gray-700 font-semibold mb-2">Category:</label>
-                        <select
-                          id="category"
-                          name="category"
-                          value={category}
-                          onChange={(e) => setCategory(e.target.value)}
-                          className="border border-gray-300 p-2 rounded w-full"
-                        >
-                          <option value="Saree">Saree</option>
-                          <option value="Salwar Suit">Salwar Suit</option>
-                          <option value="Lehenga">Lehenga</option>
-                          <option value="Designer">Designer</option>
-                        </select>
-                      </div>
-                      <label htmlFor="description" className="block text-gray-700 font-semibold mb-2">Product Description:</label>
-                      <textarea name="description" placeholder="Description" defaultValue={editProduct.description} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
-                      <label htmlFor="fabric" className="block text-gray-700 font-semibold mb-2">Fabric:</label>
-                      <input type="text" name="fabric" placeholder="Fabric" defaultValue={editProduct.fabric} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
-                      <label htmlFor="color" className="block text-gray-700 font-semibold mb-2">Color:</label>
-                      <input type="text" name="color" placeholder="Color" defaultValue={editProduct.color} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
-                      <label htmlFor="price" className="block text-gray-700 font-semibold mb-2">Price:</label>
-                      <input type="number" step="0.01" name="price" placeholder="Price" defaultValue={editProduct.price} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
-                      <button
-                        type="submit"
-                        className="bg-green-500 text-white px-4 py-2 rounded"
-                      >
-                        Save
-                      </button>
                     </form>
                   </>
                 )}

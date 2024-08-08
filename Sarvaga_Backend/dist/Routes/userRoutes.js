@@ -93,7 +93,7 @@ function getProductsByCategory(category) {
             return data;
         }
         catch (error) {
-            console.error(`Error getting ${category} products:`, error);
+            console.error(`Error getting ${category} products:${error}`);
             throw error;
         }
     });
