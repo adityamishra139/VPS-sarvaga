@@ -228,9 +228,7 @@ router.post("/products/addProducts", upload, async (req: Request, res: Response)
     price: parseFloat(req.body.price),
     images: imageUrls,
   };
-  console.log(productData);
   const inputValidation = productSchema.safeParse(productData);
-  console.log(inputValidation);
   if (!inputValidation.success) {
     console.log(inputValidation.error.format());
     return res.status(400).json({ msg: "Invalid product format" });

@@ -224,9 +224,7 @@ router.post("/products/addProducts", upload, (req, res) => __awaiter(void 0, voi
     const files = req.files;
     const imageUrls = files.map(file => ({ url: `/uploads/products/${file.filename}` }));
     const productData = Object.assign(Object.assign({}, req.body), { price: parseFloat(req.body.price), images: imageUrls });
-    console.log(productData);
     const inputValidation = productSchema.safeParse(productData);
-    console.log(inputValidation);
     if (!inputValidation.success) {
         console.log(inputValidation.error.format());
         return res.status(400).json({ msg: "Invalid product format" });

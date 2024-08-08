@@ -20,6 +20,11 @@ const AdminItems = () => {
   const [productToDelete, setProductToDelete] = useState(null);
   const [category, setCategory] = useState('Saree');
   const [id,setId] = useState(0);
+  const [productName,setProductName]=useState('');
+  const [description,setDescription]=useState('');
+  const [fabric,setFabric]=useState('');
+  const [color,setColor]=useState('');
+  const [price,setPrice]=useState('');
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -32,7 +37,43 @@ const AdminItems = () => {
 
     fetchProducts();
   }, []);
-
+  
+  const handleUpload = async (e) => {
+    e.preventDefault();
+  
+    const formData = new FormData();
+    formData.append('productName', productName);
+    formData.append('description', description);
+    formData.append('fabric', fabric);
+    formData.append('color', color);
+    formData.append('price', price);
+    formData.append('category', category);
+    
+    selectedFiles.forEach(file => {
+      formData.append('productImage', file);
+    });
+    console.log(formData);
+    try {
+      const response = await axiosInstance.post('admin/products/addProducts', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      if (response.status === 201) {
+        const newProduct = response.data.product;
+        setProducts([...products, newProduct]);
+        closeModal();
+        console.log('Product added successfully');
+      } else {
+        console.error('Failed to add product:', response.data.msg);
+      }
+      alert('uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading product:', error);
+    }
+  };
+  
   const openModal = (product = null) => {
     setSelectedFiles([]);
     setFilePreviews([]);
@@ -185,7 +226,7 @@ const AdminItems = () => {
                     <h2 className="text-xl font-bold mb-4">Add Product</h2>
                     <form onSubmit={handleAddSubmit}>
                       <label htmlFor="productName" className="block text-gray-700 font-semibold mb-2">Product Name:</label>
-                      <input type="text" name="productName" placeholder="Product Name" className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+                      <input type="text" name="productName" placeholder="Product Name" value={productName} onChange={(e) => setProductName(e.target.value)} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
                       <div className="mb-4">
                         <label htmlFor="category" className="block text-gray-700 font-semibold mb-2">Category:</label>
                         <select
@@ -202,13 +243,13 @@ const AdminItems = () => {
                         </select>
                       </div>
                       <label htmlFor="description" className="block text-gray-700 font-semibold mb-2">Product Description:</label>
-                      <textarea name="description" placeholder="Description" className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+                      <textarea name="description" placeholder="Description" value='' onChange={(e)=>setDescription(e.target.value)}className="mb-4 p-2 border border-gray-300 rounded w-full" required />
                       <label htmlFor="fabric" className="block text-gray-700 font-semibold mb-2">Fabric:</label>
-                      <input type="text" name="fabric" placeholder="Fabric" className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+                      <input type="text" name="fabric" placeholder="Fabric" value='' onChange={(e)=>setFabric(e.target.value)} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
                       <label htmlFor="color" className="block text-gray-700 font-semibold mb-2">Color:</label>
-                      <input type="text" name="color" placeholder="Color" className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+                      <input type="text" name="color" placeholder="Color" value='' onChange={(e)=>setColor(e.target.value)} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
                       <label htmlFor="price" className="block text-gray-700 font-semibold mb-2">Price:</label>
-                      <input type="number" step="0.01" name="price" placeholder="Price" className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+                      <input type="number" step="0.01" name="price" placeholder="Price" value='' onChange={(e)=>setPrice(e.target.value)} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
                       <div
                         {...getRootProps()}
                         className={`border-4 border-dashed p-20 mb-4 text-center ${isDragActive ? 'border-green-500' : 'border-gray-300'} rounded-lg`}
@@ -242,8 +283,8 @@ const AdminItems = () => {
                         </div>
                       )}
                       <button
-                        type="submit"
                         className="bg-blue-400 text-white px-4 py-2 rounded"
+                        onClick={handleUpload}
                       >
                         Upload
                       </button>

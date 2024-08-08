@@ -1,4 +1,6 @@
 {
+  "scripts": {
+  },
   "dependencies": {
     "auth0": "^4.6.0",
     "env": "^0.0.2"
