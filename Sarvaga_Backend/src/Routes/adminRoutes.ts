@@ -177,38 +177,6 @@ async function getProductsByCategory(category: string): Promise<Product[]> {
   return prisma.product.findMany({ where: { category } });
 }
 
-async function deleteImageById(id: number): Promise<any> {
-  try {
-    const product = await prisma.product.findUnique({
-      where: { id },
-      select: { images: true },
-    });
-
-    if (!product || !product.images || product.images.length === 0) {
-      throw new Error('Image not found');
-    }
-    const imagePath = product.images[0].url; 
-    const fullPath = path.join(__dirname, '/../uploads/products/', path.basename(imagePath));
-    fs.unlink(fullPath, (err) => {
-      if (err) {
-        throw new Error(`Error deleting file: ${err.message}`);
-      }
-    });
-    await prisma.product.update({
-      where: { id },
-    data: { images: { set: [] } },
-    });
-
-    return { message: 'Image deleted successfully' };
-  } catch (error) {
-    console.error('Error deleting image:', error);
-    throw new Error('Failed to delete image');
-  } finally {
-    await prisma.$disconnect();
-  }
-}
-
-
 // Routes
 router.post("/signup", async (req: Request, res: Response) => {
   const { username, email, name } = req.body;
