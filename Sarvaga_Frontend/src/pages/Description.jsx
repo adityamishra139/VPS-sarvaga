@@ -45,7 +45,7 @@ const Description = () => {
     customPaging: function (i) {
       return (
         <a>
-          <img className="w-12 h-12 object-contain" src={`https://api.sarvagafashions.com/${product.images[i].url}`} alt={product.productName} />
+          <img className="w-12 h-12 object-contain" src={`https://api.sarvagafashions.com${product.images[i].url}`} alt={product.productName} />
         </a>
       );
     },
@@ -74,7 +74,7 @@ const Description = () => {
             <Slider {...settings}>
               {product.images.map((image) => (
                 <div key={image.id} className="flex justify-center">
-                  <img className="w-full h-auto max-h-96 object-contain" src={`https://api.sarvagafashions.com/${image.url}`} alt={product.productName} onClick={() => handleImageClick(image.url)} />
+                  <img className="w-full h-auto max-h-96 object-contain" src={`https://api.sarvagafashions.com${image.url}`} alt={product.productName} onClick={() => handleImageClick(image.url)} />
                 </div>
               ))}
             </Slider>

@@ -78,7 +78,7 @@ async function getProductsByCategory(
     });
     return data;
   } catch (error) {
-    console.error(`Error getting ${category} products:`, error);
+    console.error(`Error getting ${category} products:${error}`);
     throw error;
   }
 }
