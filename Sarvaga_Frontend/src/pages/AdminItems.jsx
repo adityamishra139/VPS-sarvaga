@@ -138,21 +138,38 @@ const AdminItems = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-    const productDetails = {
-      ...editProduct,
+  
+    // Collect the updated product details
+    const updatedProduct = {
+      id: editProduct.id,
       productName: e.target.productName.value,
       description: e.target.description.value,
       fabric: e.target.fabric.value,
       color: e.target.color.value,
       price: parseFloat(e.target.price.value),
-      category,
-      images: selectedFiles.length ? selectedFiles.map(file => URL.createObjectURL(file)) : editProduct.images
+      category: category,
+      specialCategory: null, // Set this according to your requirements
+      productCode: editProduct.productCode, // Include this if needed
     };
-
-    const updatedProducts = products.map((product, index) =>
-      index === products.indexOf(editProduct) ? productDetails : product
-    );
-    setProducts(updatedProducts);
+  
+    try {
+      // Make the API call to update the product
+      const response = await axiosInstance.post("/admin/products/updateProduct", updatedProduct);
+  
+      if (response.status === 200) {
+        // Update the local state with the new product details
+        const updatedProducts = products.map((product) =>
+          product.id === editProduct.id ? response.data.product : product
+        );
+        setProducts(updatedProducts);
+        console.log('Product updated successfully');
+      } else {
+        console.error('Failed to update product:', response.data.msg);
+      }
+    } catch (error) {
+      console.error("Error updating product:", error);
+    }
+  
     closeModal();
   };
 
@@ -307,6 +324,37 @@ const AdminItems = () => {
                           ))}
                         </div>
                       )}
+                      <label htmlFor="productName" className="block text-gray-700 font-semibold mb-2">Product Name:</label>
+                      <input type="text" name="productName" placeholder="Product Name" defaultValue={editProduct.productName} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+                      <div className="mb-4">
+                        <label htmlFor="category" className="block text-gray-700 font-semibold mb-2">Category:</label>
+                        <select
+                          id="category"
+                          name="category"
+                          value={category}
+                          onChange={(e) => setCategory(e.target.value)}
+                          className="border border-gray-300 p-2 rounded w-full"
+                        >
+                          <option value="Saree">Saree</option>
+                          <option value="Salwar Suit">Salwar Suit</option>
+                          <option value="Lehenga">Lehenga</option>
+                          <option value="Designer">Designer</option>
+                        </select>
+                      </div>
+                      <label htmlFor="description" className="block text-gray-700 font-semibold mb-2">Product Description:</label>
+                      <textarea name="description" placeholder="Description" defaultValue={editProduct.description} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+                      <label htmlFor="fabric" className="block text-gray-700 font-semibold mb-2">Fabric:</label>
+                      <input type="text" name="fabric" placeholder="Fabric" defaultValue={editProduct.fabric} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+                      <label htmlFor="color" className="block text-gray-700 font-semibold mb-2">Color:</label>
+                      <input type="text" name="color" placeholder="Color" defaultValue={editProduct.color} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+                      <label htmlFor="price" className="block text-gray-700 font-semibold mb-2">Price:</label>
+                      <input type="number" step="0.01" name="price" placeholder="Price" defaultValue={editProduct.price} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+                      <button
+                        type="submit"
+                        className="bg-green-500 text-white px-4 py-2 rounded"
+                      >
+                        Save
+                      </button>
                     </form>
                   </>
                 )}
