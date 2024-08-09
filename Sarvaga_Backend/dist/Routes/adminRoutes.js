@@ -206,7 +206,7 @@ router.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function*
             .json({ msg: "Error Verifying admin", error: error.message });
     }
 }));
-router.post("/upload", (req, res) => {
+router.post("images/upload", (req, res) => {
     upload(req, res, (err) => {
         if (err) {
             res.status(400).json({ msg: err.message });

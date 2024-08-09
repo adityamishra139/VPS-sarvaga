@@ -55,9 +55,7 @@ const AdminItems = () => {
   
     try {
       const response = await axiosInstance.post('/admin/products/addProducts', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+
       });
   
       if (response.status === 201) {
@@ -175,33 +173,41 @@ const AdminItems = () => {
 
   const handleAddSubmit = async (e) => {
     e.preventDefault();
+  
     const formData = new FormData();
+    
+    // Append files to the formData
     selectedFiles.forEach(file => formData.append('images', file));
-
+  
+    // Append the rest of the product data to formData
+    formData.append('specialCategory', null);
+    formData.append('category', e.target.category.value);
+    formData.append('productName', e.target.productName.value);
+    formData.append('description', e.target.description.value);
+    formData.append('fabric', e.target.fabric.value);
+    formData.append('color', e.target.color.value);
+    formData.append('price', parseFloat(e.target.price.value));
+  
     try {
-      await axios.post('/upload', formData, {
+      // Send formData to your /products/addProducts endpoint
+      const response = await axios.post('/products/addProducts', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
-
-      const newProduct = {
-        specialCategory: null,
-        category,
-        productName: e.target.productName.value,
-        description: e.target.description.value,
-        fabric: e.target.fabric.value,
-        color: e.target.color.value,
-        price: parseFloat(e.target.price.value),
-        images: selectedFiles.map(file => URL.createObjectURL(file))
-      };
-
+  
+      const newProduct = response.data.product; // Get the newly added product from the response
+  
+      // Update the products state with the new product
       setProducts([...products, newProduct]);
+  
+      // Close the modal after successful submission
       closeModal();
     } catch (error) {
-      console.error("Error uploading images:", error);
+      console.error("Error uploading product:", error.response?.data || error.message);
     }
   };
+  
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: handleDrop,
