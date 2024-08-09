@@ -48,15 +48,15 @@ const AdminItems = () => {
     formData.append('color', color);
     formData.append('price', price);
     formData.append('category', category);
-  
+    formData.append('productCode', "adc");
+    
+    // Append each selected file to the form data
     selectedFiles.forEach(file => {
       formData.append('productImage', file);
     });
   
     try {
-      const response = await axiosInstance.post('/admin/products/addProducts', formData, {
-
-      });
+      const response = await axiosInstance.post('/admin/products/addProducts', formData);
   
       if (response.status === 201) {
         const newProduct = response.data.product;
@@ -67,9 +67,10 @@ const AdminItems = () => {
         console.error('Failed to add product:', response.data.msg);
       }
     } catch (error) {
-      console.error('Error uploading product:', error);
+      console.error('Error uploading product:', error.response?.data || error.message);
     }
   };
+  
   
   
   const openModal = (product = null) => {

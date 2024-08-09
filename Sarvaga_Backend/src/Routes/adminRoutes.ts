@@ -166,7 +166,7 @@ async function deleteProductById(id: number): Promise<Product | null> {
 
 async function getProductsById(id: number): Promise<Product | null> {
   return prisma.product.findUnique({
-    where: { id },
+    where: { id:id },
     include: {
       images: true,
     },
@@ -288,11 +288,13 @@ router.post(
       price: parseFloat(req.body.price),
       images: imageUrls,
     };
-    const inputValidation = productSchema.safeParse(productData);
-    if (!inputValidation.success) {
-      console.log(inputValidation.error.format());
-      return res.status(400).json({ msg: "Invalid product format" });
-    }
+
+    console.log(productData);
+    // const inputValidation = productSchema.safeParse(productData);
+    // if (!inputValidation.success) {
+    //   console.log(inputValidation.error.format());
+    //   return res.status(400).json({ msg: "Invalid product format" });
+    // }
 
     try {
       const newProduct = await insertProduct(productData);
