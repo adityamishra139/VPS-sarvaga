@@ -29,9 +29,9 @@ const Card = ({ product }) => {
         <div className="font-semibold text-lg text-gray-800 mb-2 group-hover:text-yellow-600 transition-colors">
           {product.productName}
         </div>
-        <p className="text-gray-600 text-sm">
+        {/* <p className="text-gray-600 text-sm">
           {product.description ? product.description.substring(0, 80) + '...' : 'No description available.'}
-        </p>
+        </p> */}
       </div>
       <div className="px-6 py-4 flex items-center justify-between">
         <span className="text-yellow-600 font-bold text-lg">₹{product.price}</span>
