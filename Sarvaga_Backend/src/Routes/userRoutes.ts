@@ -8,25 +8,21 @@ const prismaU = new PrismaClient();
 dotenv.config();
 
 const userSchema = z.object({
-  username: z.string().email(),
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
+  username: z.string(),
+  email: z.string().email(),
 });
 
 async function insertUser(
   username: string,
-  firstName: string,
-  lastName: string
+  email: string,
 ): Promise<void> {
   try {
     const res = await prismaU.user.create({
       data: {
         username,
-        firstName,
-        lastName,
+        email,
       },
     });
-    console.log(res);
   } catch (error) {
     console.error("Error inserting user:", error);
     throw error;
@@ -191,19 +187,18 @@ routerU.get("/fetchData", async (req: Request, res: Response) => {
 });
 
 routerU.post("/signup", async (req: Request, res: Response) => {
-  const { username, firstName, lastName } = req.body;
+  const { username,email} = req.body;
 
   const inputValidation = userSchema.safeParse({
     username,
-    firstName,
-    lastName,
+    email
   });
   if (!inputValidation.success) {
     return res.status(400).json({ msg: "Inputs are not valid" });
   }
 
   try {
-    await insertUser(username, firstName, lastName);
+    await insertUser(username, email);
     res.status(201).json({ msg: "User created successfully" });
   } catch (error) {
     res.status(500).json({ msg: "Error creating user" });

@@ -8,11 +8,10 @@ datasource db {
 }
 
 model User {
-  id        Int    @id @default(autoincrement())
-  username  String @unique
-  firstName String
-  lastName  String
-  carts     Cart[]
+  id       Int    @id @default(autoincrement())
+  username String @unique
+  email    String
+  carts    Cart[]
 }
 
 model Admin {
@@ -23,7 +22,7 @@ model Admin {
 }
 
 model Product {
-  id              Int           @id @default(autoincrement())
+  id              Int            @id @default(autoincrement())
   specialCategory String?
   category        String
   productName     String
@@ -37,9 +36,9 @@ model Product {
 }
 
 model ProductImage {
-  id        Int      @id @default(autoincrement())
+  id        Int     @id @default(autoincrement())
   url       String
-  product   Product  @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
   productId Int
 }
 
