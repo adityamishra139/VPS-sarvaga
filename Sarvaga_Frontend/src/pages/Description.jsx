@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams , useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/AxiosInstance';
 import Navbar from '../components/Navbar';
 import Slider from 'react-slick';
@@ -16,7 +16,8 @@ const Description = () => {
   const [product, setProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const {isAuthenticated} = useAuth0();
+  const { isAuthenticated } = useAuth0();
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -33,8 +34,11 @@ const Description = () => {
   }, [id]);
 
   if (!product) {
-    return<div className="flex items-center justify-center min-h-screen">
-        <PropagateLoader color='#A855F7' /> </div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <PropagateLoader color='#A855F7' />
+      </div>
+    );
   }
 
   const handleImageClick = (url) => {
@@ -45,7 +49,11 @@ const Description = () => {
     customPaging: function (i) {
       return (
         <a>
-          <img className="w-12 h-12 object-contain" src={`https://api.sarvagafashions.com${product.images[i].url}`} alt={product.productName} />
+          <img
+            className="w-12 h-12 object-contain"
+            src={`https://api.sarvagafashions.com${product.images[i].url}`}
+            alt={product.productName}
+          />
         </a>
       );
     },
@@ -54,16 +62,17 @@ const Description = () => {
     infinite: true,
     speed: 500,
     slidesToShow: 1,
-    slidesToScroll: 1
+    slidesToScroll: 1,
+    arrows: true, // Enable/disable arrows as needed
   };
 
-  const handleAdd2Cart = ()=>{
-    if(isAuthenticated){
-      alert("Added to Cart")
-    }else{
-      alert("Login to add product into cart")
+  const handleAdd2Cart = () => {
+    if (isAuthenticated) {
+      alert("Added to Cart");
+    } else {
+      alert("Login to add product into cart");
     }
-  }
+  };
 
   return (
     <>
@@ -72,9 +81,16 @@ const Description = () => {
         <div className="flex flex-col md:flex-row md:space-x-8">
           <div className="w-full md:w-1/2">
             <Slider {...settings}>
+              {console.log(product.images.length)}
               {product.images.map((image) => (
                 <div key={image.id} className="flex justify-center">
-                  <img className="w-full h-auto max-h-96 object-contain" src={`https://api.sarvagafashions.com${image.url}`} alt={product.productName} onClick={() => handleImageClick(image.url)} />
+                   
+                  <img
+                    className="w-full h-auto max-h-96 object-contain"
+                    src={`https://api.sarvagafashions.com${image.url}`}
+                    alt={product.productName}
+                    onClick={() => handleImageClick(image.url)}
+                  />
                 </div>
               ))}
             </Slider>
@@ -100,7 +116,12 @@ const Description = () => {
                 className="w-20 p-2 border border-gray-300 rounded text-lg"
               />
             </div>
-            <button onClick={()=>handleAdd2Cart()} className="mt-6 bg-blue-500 text-white py-3 px-6 rounded-lg text-lg font-semibold hover:bg-blue-600 transition duration-300">Add to Cart</button>
+            <button
+              onClick={handleAdd2Cart}
+              className="mt-6 bg-blue-500 text-white py-3 px-6 rounded-lg text-lg font-semibold hover:bg-blue-600 transition duration-300"
+            >
+              Add to Cart
+            </button>
           </div>
         </div>
       </div>

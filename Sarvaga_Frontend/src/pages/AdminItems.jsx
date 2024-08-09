@@ -273,7 +273,7 @@ const AdminItems = () => {
                       <label htmlFor="color" className="block text-gray-700 font-semibold mb-2">Color:</label>
                       <input type="text" name="color" placeholder="Color" value={color} onChange={(e)=>setColor(e.target.value)} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
                       <label htmlFor="price" className="block text-gray-700 font-semibold mb-2">Price:</label>
-                      <input type="number" step="0.01" name="price" placeholder="Price" value={price} onChange={(e)=>setPrice(e.target.value)} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+                      <input type="number" step="0.01" name="price" placeholder={price} value={price} onChange={(e)=>setPrice(e.target.value)} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
                       <div
                         {...getRootProps()}
                         className={`border-4 border-dashed p-20 mb-4 text-center ${isDragActive ? 'border-green-500' : 'border-gray-300'} rounded-lg`}
