@@ -180,14 +180,14 @@ const AdminItems = () => {
     selectedFiles.forEach(file => formData.append('images', file));
   
     // Append the rest of the product data to formData
-    formData.append('specialCategory', null);
+    formData.append('specialCategory', "SarkarkaLauda");
     formData.append('category', e.target.category.value);
     formData.append('productName', e.target.productName.value);
     formData.append('description', e.target.description.value);
     formData.append('fabric', e.target.fabric.value);
     formData.append('color', e.target.color.value);
     formData.append('price', parseFloat(e.target.price.value));
-  
+    formData.append('productCode', 'LaudaKSarkar');
     try {
       // Send formData to your /products/addProducts endpoint
       const response = await axios.post('/products/addProducts', formData, {
