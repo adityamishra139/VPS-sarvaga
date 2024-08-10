@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { z } from "zod";
-import { PrismaClient, Product } from "@prisma/client";
+import { PrismaClient, Product, User } from "@prisma/client";
 import dotenv from "dotenv";
 
 const routerU = express.Router();
@@ -15,7 +15,7 @@ const userSchema = z.object({
 async function insertUser(
   username: string,
   email: string,
-): Promise<void> {
+): Promise<User> {
   try {
     const res = await prismaU.user.create({
       data: {
@@ -23,6 +23,7 @@ async function insertUser(
         email,
       },
     });
+    return res;
   } catch (error) {
     console.error("Error inserting user:", error);
     throw error;
