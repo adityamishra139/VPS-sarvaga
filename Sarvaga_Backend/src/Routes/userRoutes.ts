@@ -232,8 +232,8 @@ routerU.post("/signup", async (req: Request, res: Response) => {
   }
 
   try {
-    await insertUser(username, email);
-    res.status(201).json({ msg: "User created successfully", user: "" });
+    const user = await insertUser(username, email);
+    res.status(201).json({ msg: "User created successfully",id:user.id });
   } catch (error) {
     res.status(500).json({ msg: "Error creating user" });
   }
@@ -251,7 +251,7 @@ routerU.post("/signin", async (req: Request, res: Response) => {
   try {
     const user = await verifyUser(username, email);
     if (user) {
-      return res.status(200).json({ msg: "User verified successfully" });
+      return res.status(200).json({ msg: "User verified successfully" ,id:user.id});
     } else {
       return res.status(404).json({ msg: "User not found" });
     }
@@ -284,16 +284,6 @@ routerU.post("/carts/addItems", async (req: Request, res: Response) => {
   }
 });
 
-routerU.get("/carts/getProducts", async (req, res) => {
-  // Fixed route with '/'
-  const { userId } = req.body;
-  try {
-    const items = await getItems(parseInt(userId)); // Await here
-    res.json(items); // Send the items back in the response
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
 routerU.get("/products/ID/:id", async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
@@ -338,6 +328,7 @@ routerU.post("/carts/additem", async (req: Request, res: Response) => {
 routerU.get("/carts/getItems", async (req: Request, res: Response) => {
   try {
     const { userId } = req.body;
+    console.log(userId)
     const response = await getItems(userId);
     res.json(response);
   } catch (error) {
