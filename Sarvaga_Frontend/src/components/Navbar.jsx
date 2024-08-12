@@ -25,6 +25,7 @@ const Navbar = () => {
       if (admin=="Admin Verified Successfully") {
         setIsAdmin(true); // Assuming setIsAdmin is a state setter function
       }
+      
     } catch (error) {
       console.error("Error fetching admin status:", error);
     }

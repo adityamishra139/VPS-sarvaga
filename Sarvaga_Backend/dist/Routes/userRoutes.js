@@ -20,24 +20,39 @@ const routerU = express_1.default.Router();
 const prismaU = new client_1.PrismaClient();
 dotenv_1.default.config();
 const userSchema = zod_1.z.object({
-    username: zod_1.z.string().email(),
-    firstName: zod_1.z.string().min(1),
-    lastName: zod_1.z.string().min(1),
+    username: zod_1.z.string(),
+    email: zod_1.z.string().email(),
 });
-function insertUser(username, firstName, lastName) {
+function insertUser(username, email) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const res = yield prismaU.user.create({
                 data: {
                     username,
-                    firstName,
-                    lastName,
+                    email,
                 },
             });
-            console.log(res);
+            return res;
         }
         catch (error) {
             console.error("Error inserting user:", error);
+            throw error;
+        }
+    });
+}
+function verifyUser(username, email) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const res = yield prismaU.user.findFirst({
+                where: {
+                    username,
+                    email,
+                },
+            });
+            return res;
+        }
+        catch (error) {
+            console.error("Error verifying user:", error);
             throw error;
         }
     });
@@ -142,8 +157,14 @@ const insertItem = (userId, productId) => __awaiter(void 0, void 0, void 0, func
 const getItems = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let cart = yield prismaU.cart.findFirst({
-            where: { ownerId: userId },
-            include: { cartProducts: true },
+            where: {
+                ownerId: userId, // Fix: Direct comparison with userId
+            },
+            include: {
+                cartProducts: {
+                    include: { product: true } // Include product details
+                }
+            },
         });
         if (!cart) {
             cart = yield prismaU.cart.create({
@@ -153,10 +174,14 @@ const getItems = (userId) => __awaiter(void 0, void 0, void 0, function* () {
                         create: [],
                     },
                 },
-                include: { cartProducts: { include: { product: true } } },
+                include: {
+                    cartProducts: {
+                        include: { product: true } // Include product details
+                    }
+                },
             });
         }
-        return cart.cartProducts;
+        return cart.cartProducts.map(cartProduct => cartProduct.product);
     }
     catch (error) {
         throw error;
@@ -179,14 +204,17 @@ const deleteItems = (userId, productId) => __awaiter(void 0, void 0, void 0, fun
                     id: cartProduct.id,
                 },
             });
-            console.log("Product removed from cart");
+            const updatedCart = yield prismaU.cart.findUnique({
+                where: { id: cart.id },
+                include: { cartProducts: { include: { product: true } } },
+            });
+            return updatedCart;
         }
         else {
-            console.log("Product not found in cart");
+            return { msg: "Invalid Product ID" };
         }
     }
     catch (error) {
-        console.error("Error deleting item from cart:", error);
         throw error;
     }
 });
@@ -201,21 +229,42 @@ routerU.get("/fetchData", (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 }));
 routerU.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, firstName, lastName } = req.body;
+    const { username, email } = req.body;
     const inputValidation = userSchema.safeParse({
         username,
-        firstName,
-        lastName,
+        email,
     });
     if (!inputValidation.success) {
         return res.status(400).json({ msg: "Inputs are not valid" });
     }
     try {
-        yield insertUser(username, firstName, lastName);
-        res.status(201).json({ msg: "User created successfully" });
+        yield insertUser(username, email);
+        res.status(201).json({ msg: "User created successfully", user: "" });
     }
     catch (error) {
         res.status(500).json({ msg: "Error creating user" });
+    }
+}));
+routerU.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { username, email } = req.body;
+    const inputValidation = userSchema.safeParse({
+        username,
+        email,
+    });
+    if (!inputValidation.success) {
+        return res.status(400).json({ msg: "Inputs are not valid" });
+    }
+    try {
+        const user = yield verifyUser(username, email);
+        if (user) {
+            return res.status(200).json({ msg: "User verified successfully" });
+        }
+        else {
+            return res.status(404).json({ msg: "User not found" });
+        }
+    }
+    catch (error) {
+        res.status(500).json({ msg: "Error verifying user" });
     }
 }));
 routerU.get("/products/all", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -231,6 +280,27 @@ routerU.get("/products/all", (req, res) => __awaiter(void 0, void 0, void 0, fun
     catch (error) {
         console.error("Error fetching products:", error);
         res.status(500).send("Error fetching products");
+    }
+}));
+routerU.post("/carts/addItems", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId, productId } = req.body;
+    try {
+        const item = yield insertItem(userId, productId);
+        res.json(item);
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}));
+routerU.get("/carts/getProducts", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Fixed route with '/'
+    const { userId } = req.body;
+    try {
+        const items = yield getItems(parseInt(userId)); // Await here
+        res.json(items); // Send the items back in the response
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message });
     }
 }));
 routerU.get("/products/ID/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -285,7 +355,7 @@ routerU.get("/carts/getItems", (req, res) => __awaiter(void 0, void 0, void 0, f
         console.error("Error getting item from cart:", error);
     }
 }));
-routerU.delete("/ItemsInCart/delete", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+routerU.delete("/carts/delete", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId, productId } = req.body;
         const response = yield deleteItems(userId, productId);
@@ -297,11 +367,9 @@ routerU.delete("/ItemsInCart/delete", (req, res) => __awaiter(void 0, void 0, vo
     }
 }));
 routerU.get("/order/*", (req, res) => {
-    // Implement order handling logic here
     res.send("Order details");
 });
 routerU.get("/trackItems", (req, res) => {
-    // Implement item tracking logic here
     res.send("Tracking items");
 });
 exports.default = routerU;

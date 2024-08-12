@@ -156,7 +156,7 @@ function deleteProductById(id) {
 function getProductsById(id) {
     return __awaiter(this, void 0, void 0, function* () {
         return prisma.product.findUnique({
-            where: { id },
+            where: { id: id },
             include: {
                 images: true,
             },
@@ -264,11 +264,12 @@ router.post("/products/addProducts", upload, (req, res) => __awaiter(void 0, voi
         url: `/uploads/products/${file.filename}`,
     }));
     const productData = Object.assign(Object.assign({}, req.body), { price: parseFloat(req.body.price), images: imageUrls });
-    const inputValidation = productSchema.safeParse(productData);
-    if (!inputValidation.success) {
-        console.log(inputValidation.error.format());
-        return res.status(400).json({ msg: "Invalid product format" });
-    }
+    console.log(productData);
+    // const inputValidation = productSchema.safeParse(productData);
+    // if (!inputValidation.success) {
+    //   console.log(inputValidation.error.format());
+    //   return res.status(400).json({ msg: "Invalid product format" });
+    // }
     try {
         const newProduct = yield insertProduct(productData);
         res

@@ -12,10 +12,7 @@ const userSchema = z.object({
   email: z.string().email(),
 });
 
-async function insertUser(
-  username: string,
-  email: string,
-): Promise<User> {
+async function insertUser(username: string, email: string): Promise<User> {
   try {
     const res = await prismaU.user.create({
       data: {
@@ -26,6 +23,24 @@ async function insertUser(
     return res;
   } catch (error) {
     console.error("Error inserting user:", error);
+    throw error;
+  }
+}
+
+async function verifyUser(
+  username: string,
+  email: string
+): Promise<User | null> {
+  try {
+    const res = await prismaU.user.findFirst({
+      where: {
+        username,
+        email,
+      },
+    });
+    return res;
+  } catch (error: any) {
+    console.error("Error verifying user:", error);
     throw error;
   }
 }
@@ -126,12 +141,19 @@ const insertItem = async (userId: number, productId: number) => {
   }
 };
 
-const getItems = async (userId: number) => {
+const getItems = async (userId: number): Promise<Product[]> => {
   try {
     let cart = await prismaU.cart.findFirst({
-      where: { ownerId: userId },
-      include: { cartProducts: true },
+      where: {
+        ownerId: userId,  // Fix: Direct comparison with userId
+      },
+      include: { 
+        cartProducts: { 
+          include: { product: true }  // Include product details
+        } 
+      },
     });
+
     if (!cart) {
       cart = await prismaU.cart.create({
         data: {
@@ -140,14 +162,22 @@ const getItems = async (userId: number) => {
             create: [],
           },
         },
-        include: { cartProducts: { include: { product: true } } },
+        include: { 
+          cartProducts: { 
+            include: { product: true }  // Include product details
+          } 
+        },
       });
     }
-    return cart.cartProducts;
+
+    return cart.cartProducts.map(cartProduct => cartProduct.product);
+
   } catch (error) {
     throw error;
   }
 };
+
+
 const deleteItems = async (userId: number, productId: number) => {
   try {
     let cart = await prismaU.cart.findFirst({
@@ -167,12 +197,15 @@ const deleteItems = async (userId: number, productId: number) => {
           id: cartProduct.id,
         },
       });
-      console.log("Product removed from cart");
+      const updatedCart = await prismaU.cart.findUnique({
+        where: { id: cart.id },
+        include: { cartProducts: { include: { product: true } } },
+      });
+      return updatedCart;
     } else {
-      console.log("Product not found in cart");
+      return {msg:"Invalid Product ID"}
     }
   } catch (error) {
-    console.error("Error deleting item from cart:", error);
     throw error;
   }
 };
@@ -188,11 +221,11 @@ routerU.get("/fetchData", async (req: Request, res: Response) => {
 });
 
 routerU.post("/signup", async (req: Request, res: Response) => {
-  const { username,email} = req.body;
+  const { username, email } = req.body;
 
   const inputValidation = userSchema.safeParse({
     username,
-    email
+    email,
   });
   if (!inputValidation.success) {
     return res.status(400).json({ msg: "Inputs are not valid" });
@@ -200,11 +233,33 @@ routerU.post("/signup", async (req: Request, res: Response) => {
 
   try {
     await insertUser(username, email);
-    res.status(201).json({ msg: "User created successfully" });
+    res.status(201).json({ msg: "User created successfully", user: "" });
   } catch (error) {
     res.status(500).json({ msg: "Error creating user" });
   }
 });
+
+routerU.post("/signin", async (req: Request, res: Response) => {
+  const { username, email } = req.body;
+  const inputValidation = userSchema.safeParse({
+    username,
+    email,
+  });
+  if (!inputValidation.success) {
+    return res.status(400).json({ msg: "Inputs are not valid" });
+  }
+  try {
+    const user = await verifyUser(username, email);
+    if (user) {
+      return res.status(200).json({ msg: "User verified successfully" });
+    } else {
+      return res.status(404).json({ msg: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ msg: "Error verifying user" });
+  }
+});
+
 routerU.get("/products/all", async (req: Request, res: Response) => {
   try {
     const productsArr = await getAllProducts();
@@ -218,6 +273,28 @@ routerU.get("/products/all", async (req: Request, res: Response) => {
     res.status(500).send("Error fetching products");
   }
 });
+
+routerU.post("/carts/addItems", async (req: Request, res: Response) => {
+  const { userId, productId } = req.body;
+  try {
+    const item = await insertItem(userId, productId);
+    res.json(item);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+routerU.get("/carts/getProducts", async (req, res) => {
+  // Fixed route with '/'
+  const { userId } = req.body;
+  try {
+    const items = await getItems(parseInt(userId)); // Await here
+    res.json(items); // Send the items back in the response
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 routerU.get("/products/ID/:id", async (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
 
@@ -269,7 +346,7 @@ routerU.get("/carts/getItems", async (req: Request, res: Response) => {
   }
 });
 
-routerU.delete("/ItemsInCart/delete", async (req: Request, res: Response) => {
+routerU.delete("/carts/delete", async (req: Request, res: Response) => {
   try {
     const { userId, productId } = req.body;
     const response = await deleteItems(userId, productId);
@@ -281,12 +358,10 @@ routerU.delete("/ItemsInCart/delete", async (req: Request, res: Response) => {
 });
 
 routerU.get("/order/*", (req: Request, res: Response) => {
-  // Implement order handling logic here
   res.send("Order details");
 });
 
 routerU.get("/trackItems", (req: Request, res: Response) => {
-  // Implement item tracking logic here
   res.send("Tracking items");
 });
 
