@@ -238,8 +238,8 @@ routerU.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function
         return res.status(400).json({ msg: "Inputs are not valid" });
     }
     try {
-        yield insertUser(username, email);
-        res.status(201).json({ msg: "User created successfully", user: "" });
+        const user = yield insertUser(username, email);
+        res.status(201).json({ msg: "User created successfully", id: user.id });
     }
     catch (error) {
         res.status(500).json({ msg: "Error creating user" });
@@ -257,7 +257,7 @@ routerU.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function
     try {
         const user = yield verifyUser(username, email);
         if (user) {
-            return res.status(200).json({ msg: "User verified successfully" });
+            return res.status(200).json({ msg: "User verified successfully", id: user.id });
         }
         else {
             return res.status(404).json({ msg: "User not found" });
