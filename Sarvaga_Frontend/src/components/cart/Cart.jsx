@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CartItem from './CartItem';
 import {useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -7,63 +7,44 @@ import Navbar from '../Navbar';
 
 const Cart = () => {
     const {user , isAuthenticated} = useAuth0();
-    const [products ,setProducts] = useState([]);
-    const [items, setItems] = useState([
-        { id: 1, name: 'Item 1', price: 10, quantity: 1, image: 'https://via.placeholder.com/100' },
-        { id: 2, name: 'Item 2', price: 15, quantity: 1, image: 'https://via.placeholder.com/100' },
-    ]);
-    const Navigate=useNavigate();
-    const addItem = () => {
-        // const newItem = { id: items.length + 1, name: Item ${items.length + 1}, price: Math.floor(Math.random() * 20) + 5, quantity: 1, image: 'https://via.placeholder.com/100' };
-        // setItems([...items, newItem]);
-        Navigate('/sarees')
+    const [items, setItems] = useState([]);
+    const navigate = useNavigate(); 
 
-    };
+    useEffect(() => {
+        const getProducts = async () => {
+            if (isAuthenticated) {
+                try {
+                    let user_response = await axiosInstance.post("/user/signin", {
+                        username: user.name,
+                        email: user.email
+                    });
 
-    const getProducts = async()=>{
-        if(isAuthenticated)
-        {
-            try
-            {
-                let user_response = await axiosInstance.post("/user/signin",{
-                username : user.name,
-                email : user.email
-                })
-                if(user_response.data.msg == "User not found")
-                {
-                    user_response = await axiosInstance.post("user/signup",{
-                        username : user.name,
-                        email : user.email,
-                    })
+                    // If user not found, sign them up
+                    if (user_response.data.msg === "User not found") {
+                        user_response = await axiosInstance.post("/user/signup", {
+                            username: user.name,
+                            email: user.email,
+                        });
+                    }
+
+                    const user_id = user_response.data.id;
+                    console.log("User ID:", user_id);
+
+                    // Fetch cart items
+                    const response = await axiosInstance.get(`/user/carts/getItems`, {
+                        params: { userId: user_id }
+                    });
+                    setItems(response.data.items);
+                } catch (e) {
+                    console.error("Error fetching cart", e);
                 }
-                const user_id = user_response.data.id;
-                console.log(user_id)
-                const response = await axiosInstance.get("user/carts/getItems",{
-                    userId : user_id,
-                })
-                console.log(response);
+            } else {
+                console.error("Not Authenticated");
             }
-            catch(e){
-                console.error("Error fetching cart" , e)
-            }
-        }
-        else{
-            console.error("Not Authenticated");
-        }
-    }
-    getProducts();
-    const removeItem = (id) => {
-        setItems(items.filter(item => item.id !== id));
-    };
+        };
 
-    const updateQuantity = (id, newQuantity) => {
-        if (newQuantity < 1) return;
-        setItems(items.map(item => item.id === id ? { ...item, quantity: newQuantity } : item));
-    };
-
-    const getTotalPrice = () => {
-        return items.reduce((total, item) => total + item.price * item.quantity, 0);
-    };
+        getProducts();
+    }, [isAuthenticated, user]);
 
     return (
         <>
@@ -73,12 +54,11 @@ const Cart = () => {
 
             <div className="space-y-4">
                 {items.map(item => (
-                    <CartItem key={item.id} item={item} onRemove={removeItem} onUpdateQuantity={updateQuantity} />
+                    <CartItem key={item.id} item={item}  onUpdateQuantity={updateQuantity} />
                 ))}
             </div>
             <div className="mt-4 flex flex-row  gap-10">
-                <h3 className="text-xl font-semibold">Total Price: Rs.{getTotalPrice()}</h3>
-                <button onClick={addItem} className="mb-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Add Item</button>
+                <button className="mb-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Continue to Payment</button>
             </div>
         </div>
         </>

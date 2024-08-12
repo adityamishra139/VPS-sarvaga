@@ -319,12 +319,13 @@ routerU.post("/carts/additem", async (req: Request, res: Response) => {
   try {
     const { userId, productId } = req.body;
     const response = await insertItem(userId, productId);
-    res.json(response);
+    res.json({ success: true, cart: response });
   } catch (error) {
     console.error("Error adding item to cart:", error);
     res.status(500).json({ error: "Failed to add item to cart" });
   }
 });
+
 routerU.get("/carts/getItems", async (req: Request, res: Response) => {
   try {
     const { userId } = req.body;

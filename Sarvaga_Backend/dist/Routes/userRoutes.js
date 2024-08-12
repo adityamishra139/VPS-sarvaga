@@ -292,17 +292,6 @@ routerU.post("/carts/addItems", (req, res) => __awaiter(void 0, void 0, void 0, 
         res.status(500).json({ error: error.message });
     }
 }));
-routerU.get("/carts/getProducts", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // Fixed route with '/'
-    const { userId } = req.body;
-    try {
-        const items = yield getItems(parseInt(userId)); // Await here
-        res.json(items); // Send the items back in the response
-    }
-    catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-}));
 routerU.get("/products/ID/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
@@ -337,7 +326,7 @@ routerU.post("/carts/additem", (req, res) => __awaiter(void 0, void 0, void 0, f
     try {
         const { userId, productId } = req.body;
         const response = yield insertItem(userId, productId);
-        res.json(response);
+        res.json({ success: true, cart: response });
     }
     catch (error) {
         console.error("Error adding item to cart:", error);
@@ -347,6 +336,7 @@ routerU.post("/carts/additem", (req, res) => __awaiter(void 0, void 0, void 0, f
 routerU.get("/carts/getItems", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.body;
+        console.log(userId);
         const response = yield getItems(userId);
         res.json(response);
     }

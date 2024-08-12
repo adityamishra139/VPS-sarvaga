@@ -3,9 +3,14 @@ import Logo2 from "../assets/logo2.png";
 import { FaCartShopping } from "react-icons/fa6";
 import { useAuth0 } from "@auth0/auth0-react";
 import axiosInstance from '../api/AxiosInstance';
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const { loginWithRedirect, logout, user, isAuthenticated } = useAuth0();
+  const navigate=useNavigate();
+  const handleNavCart=()=>{
+    navigate('/cart')
+  }
   async function checkAdminStatus() {
     try {
       const response = await axiosInstance.post(
@@ -47,7 +52,7 @@ const Navbar = () => {
             </a>
           </div>
           <div className="flex items-center gap-6">
-            <button className="bg-[#4D135C] hover:bg-[#7E408D] transition-all duration-200 text-white py-2 px-6 rounded-full flex items-center gap-2">
+            <button onClick={handleNavCart} className="bg-[#4D135C] hover:bg-[#7E408D] transition-all duration-200 text-white py-2 px-6 rounded-full flex items-center gap-2">
               <FaCartShopping className="text-xl" />
               <span className="hidden md:inline">Cart</span>
             </button>
