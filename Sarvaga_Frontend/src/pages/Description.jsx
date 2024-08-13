@@ -122,6 +122,7 @@ const Description = () => {
           <div className="w-full md:w-1/2 mt-4 md:mt-0">
             <h1 className="text-3xl font-bold text-gray-800 mb-4">{product.productName}</h1>
             <div className="space-y-2">
+              <p className="text-lg text-gray-600"><strong className="font-semibold">Product Code:</strong> {product.productCode}</p>
               <p className="text-lg text-gray-600"><strong className="font-semibold">Category:</strong> {product.category}</p>
               <p className="text-lg text-gray-600"><strong className="font-semibold">Color:</strong> {product.color}</p>
               <p className="text-lg text-gray-600"><strong className="font-semibold">Fabric:</strong> {product.fabric}</p>
