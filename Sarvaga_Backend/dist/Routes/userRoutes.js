@@ -242,6 +242,7 @@ routerU.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function
         res.status(201).json({ msg: "User created successfully", id: user.id });
     }
     catch (error) {
+        console.log(error);
         res.status(500).json({ msg: "Error creating user" });
     }
 }));
@@ -260,7 +261,7 @@ routerU.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function
             return res.status(200).json({ msg: "User verified successfully", id: user.id });
         }
         else {
-            return res.status(404).json({ msg: "User not found" });
+            return res.status(200).json({ msg: "User not found" });
         }
     }
     catch (error) {
@@ -333,7 +334,7 @@ routerU.post("/carts/additem", (req, res) => __awaiter(void 0, void 0, void 0, f
         res.status(500).json({ error: "Failed to add item to cart" });
     }
 }));
-routerU.get("/carts/getItems", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+routerU.post("/carts/getItems", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.body;
         console.log(userId);

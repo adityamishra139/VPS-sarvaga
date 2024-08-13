@@ -88,11 +88,12 @@ const Description = () => {
           userId : user_id,
           productId : productID
         })
+        console.log(response)
+        alert("Added to Cart");
       }
       catch(e){
         console.error("error in adding product to cart (user)")
       }
-      alert("Added to Cart");
     } else {
       alert("Login to add product into cart");
     }
