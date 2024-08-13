@@ -10,39 +10,38 @@ const Cart = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const getProducts = async () => {
-            if (isAuthenticated) {
-                try {
-                    let user_response = await axiosInstance.post("/user/signin", {
-                        username: user.name,
-                        email: user.email
-                    });
-
-                    // If user not found, sign them up
-                    if (user_response.data.msg === "User not found") {
-                        user_response = await axiosInstance.post("/user/signup", {
-                            username: user.name,
-                            email: user.email,
-                        });
+        const getProducts = async()=>{
+            if(isAuthenticated)
+            {
+                try
+                {
+                    let user_response = await axiosInstance.post("/user/signin",{
+                    username : user.name,
+                    email : user.email
+                    })
+                    if(user_response.data.msg == "User not found")
+                    {
+                        user_response = await axiosInstance.post("user/signup",{
+                            username : user.name,
+                            email : user.email,
+                        })
                     }
-
                     const user_id = user_response.data.id;
-                    console.log("User ID:", user_id);
-
-                    // Fetch cart items
-                    const response = await axiosInstance.get(`/user/carts/getItems`, {
-                         userId: user_id 
-                    });
-                    console.log(response)
-                    setItems(response.data);
-                } catch (e) {
-                    console.error("Error fetching cart", e);
+                    console.log("user id "+user_id)
+                    const response = await axiosInstance.post("user/carts/getItems",{
+                        userId : user_id,
+                    })
+                    console.log("response\n",response);
+                    setItems(response.data)
                 }
-            } else {
+                catch(e){
+                    console.error("Error fetching cart" , e)
+                }
+            }
+            else{
                 console.error("Not Authenticated");
             }
-        };
-
+        }
         getProducts();
     }, [isAuthenticated, user]);
 
@@ -59,10 +58,10 @@ const Cart = () => {
                             <div>
                                 <h3 className="text-lg font-semibold">{item.productName}</h3>
                                 <p>Quantity: {item.quantity}</p>
-                                <p>Price: ${item.price}</p>
+                                <p>Price: ₹{item.price}</p>
                             </div>
                             <div>
-                                <p className="text-xl font-bold">${item.price}</p>
+                                <p className="text-xl font-bold">₹{item.price}</p>
                             </div>
                         </div>
                     ))}

@@ -235,6 +235,7 @@ routerU.post("/signup", async (req: Request, res: Response) => {
     const user = await insertUser(username, email);
     res.status(201).json({ msg: "User created successfully",id:user.id });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ msg: "Error creating user" });
   }
 });
@@ -253,7 +254,7 @@ routerU.post("/signin", async (req: Request, res: Response) => {
     if (user) {
       return res.status(200).json({ msg: "User verified successfully" ,id:user.id});
     } else {
-      return res.status(404).json({ msg: "User not found" });
+      return res.status(200).json({ msg: "User not found" });
     }
   } catch (error) {
     res.status(500).json({ msg: "Error verifying user" });
@@ -326,7 +327,7 @@ routerU.post("/carts/additem", async (req: Request, res: Response) => {
   }
 });
 
-routerU.get("/carts/getItems", async (req: Request, res: Response) => {
+routerU.post("/carts/getItems", async (req: Request, res: Response) => {
   try {
     const { userId } = req.body;
     console.log(userId)
