@@ -19,12 +19,15 @@ const AdminItems = () => {
   const [confirmDialogIsOpen, setConfirmDialogIsOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
   const [category, setCategory] = useState('Saree');
-  const [id,setId] = useState(0);
-  const [productName,setProductName]=useState('');
-  const [description,setDescription]=useState('');
-  const [fabric,setFabric]=useState('');
-  const [color,setColor]=useState('');
-  const [price,setPrice]=useState('');
+  const [id, setId] = useState(0);
+  const [productName, setProductName] = useState('');
+  const [description, setDescription] = useState('');
+  const [fabric, setFabric] = useState('');
+  const [color, setColor] = useState('');
+  const [price, setPrice] = useState('');
+  const [productCode, setProductCode] = useState('');
+  const [specialCategory, setSpecialCategory] = useState('');
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -37,10 +40,10 @@ const AdminItems = () => {
 
     fetchProducts();
   }, []);
-  
+
   const handleUpload = async (e) => {
     e.preventDefault();
-  
+
     const formData = new FormData();
     formData.append('productName', productName);
     formData.append('description', description);
@@ -48,16 +51,16 @@ const AdminItems = () => {
     formData.append('color', color);
     formData.append('price', price);
     formData.append('category', category);
-    formData.append('productCode', "adc");
-    
-    // Append each selected file to the form data
+    formData.append('productCode', productCode);
+    formData.append('specialCategory', specialCategory);
+
     selectedFiles.forEach(file => {
       formData.append('productImage', file);
     });
-  
+
     try {
       const response = await axiosInstance.post('/admin/products/addProducts', formData);
-  
+
       if (response.status === 201) {
         const newProduct = response.data.product;
         setProducts([...products, newProduct]);
@@ -70,9 +73,7 @@ const AdminItems = () => {
       console.error('Error uploading product:', error.response?.data || error.message);
     }
   };
-  
-  
-  
+
   const openModal = (product = null) => {
     setSelectedFiles([]);
     setFilePreviews([]);
@@ -108,7 +109,7 @@ const AdminItems = () => {
     setFilePreviews(updatedPreviews);
   };
 
-  const openConfirmDialog = (index,id) => {
+  const openConfirmDialog = (index, id) => {
     setProductToDelete(index);
     setConfirmDialogIsOpen(true);
     setId(id);
@@ -119,7 +120,7 @@ const AdminItems = () => {
     setConfirmDialogIsOpen(false);
   };
 
-  const handleConfirmDelete = async() => {
+  const handleConfirmDelete = async () => {
     if (productToDelete !== null) {
       const updatedProducts = products.filter((_, i) => i !== productToDelete);
       setProducts(updatedProducts);
@@ -137,8 +138,7 @@ const AdminItems = () => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault();
-  
-    // Collect the updated product details
+
     const updatedProduct = {
       id: editProduct.id,
       productName: e.target.productName.value,
@@ -147,16 +147,14 @@ const AdminItems = () => {
       color: e.target.color.value,
       price: parseFloat(e.target.price.value),
       category: category,
-      specialCategory: null, // Set this according to your requirements
-      productCode: editProduct.productCode, // Include this if needed
+      specialCategory: e.target.specialCategory.value,
+      productCode: e.target.productCode.value,
     };
-  
+
     try {
-      // Make the API call to update the product
       const response = await axiosInstance.post("/admin/products/updateProduct", updatedProduct);
-  
+
       if (response.status === 200) {
-        // Update the local state with the new product details
         const updatedProducts = products.map((product) =>
           product.id === editProduct.id ? response.data.product : product
         );
@@ -168,47 +166,42 @@ const AdminItems = () => {
     } catch (error) {
       console.error("Error updating product:", error);
     }
-  
+
     closeModal();
   };
 
   const handleAddSubmit = async (e) => {
     e.preventDefault();
-  
+
     const formData = new FormData();
     
-    // Append files to the formData
     selectedFiles.forEach(file => formData.append('images', file));
-  
-    // Append the rest of the product data to formData
-    formData.append('specialCategory', "SarkarkaLauda");
+
+    formData.append('specialCategory', specialCategory);
     formData.append('category', e.target.category.value);
     formData.append('productName', e.target.productName.value);
     formData.append('description', e.target.description.value);
     formData.append('fabric', e.target.fabric.value);
     formData.append('color', e.target.color.value);
     formData.append('price', parseFloat(e.target.price.value));
-    formData.append('productCode', 'LaudaKSarkar');
+    formData.append('productCode', productCode);
+
     try {
-      // Send formData to your /products/addProducts endpoint
       const response = await axios.post('/products/addProducts', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
-  
-      const newProduct = response.data.product; // Get the newly added product from the response
-  
-      // Update the products state with the new product
+
+      const newProduct = response.data.product;
+
       setProducts([...products, newProduct]);
-  
-      // Close the modal after successful submission
+
       closeModal();
     } catch (error) {
       console.error("Error uploading product:", error.response?.data || error.message);
     }
   };
-  
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: handleDrop,
@@ -239,7 +232,7 @@ const AdminItems = () => {
                   key={index}
                   product={product}
                   onEdit={() => openModal(index)}
-                  onDelete={() => openConfirmDialog(index,product.id)}
+                  onDelete={() => openConfirmDialog(index, product.id)}
                 />
               ))}
             </div>
@@ -266,14 +259,25 @@ const AdminItems = () => {
                           <option value="Designer">Designer</option>
                         </select>
                       </div>
+
                       <label htmlFor="description" className="block text-gray-700 font-semibold mb-2">Product Description:</label>
-                      <textarea name="description" placeholder="Description" value={description} onChange={(e)=>setDescription(e.target.value)}className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+                      <textarea name="description" placeholder="Description" value={description} onChange={(e)=>setDescription(e.target.value)} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+
                       <label htmlFor="fabric" className="block text-gray-700 font-semibold mb-2">Fabric:</label>
                       <input type="text" name="fabric" placeholder="Fabric" value={fabric} onChange={(e)=>setFabric(e.target.value)} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+
                       <label htmlFor="color" className="block text-gray-700 font-semibold mb-2">Color:</label>
                       <input type="text" name="color" placeholder="Color" value={color} onChange={(e)=>setColor(e.target.value)} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+
                       <label htmlFor="price" className="block text-gray-700 font-semibold mb-2">Price:</label>
                       <input type="number" step="0.01" name="price" placeholder={price} value={price} onChange={(e)=>setPrice(e.target.value)} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+
+                      <label htmlFor="productCode" className="block text-gray-700 font-semibold mb-2">Product Code:</label>
+                      <input type="text" name="productCode" placeholder="Product Code" value={productCode} onChange={(e)=>setProductCode(e.target.value)} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+
+                      <label htmlFor="specialCategory" className="block text-gray-700 font-semibold mb-2">Special Category:</label>
+                      <input type="text" name="specialCategory" placeholder="Special Category" value={specialCategory} onChange={(e)=>setSpecialCategory(e.target.value)} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+
                       <div
                         {...getRootProps()}
                         className={`border-4 border-dashed p-20 mb-4 text-center ${isDragActive ? 'border-green-500' : 'border-gray-300'} rounded-lg`}
@@ -285,6 +289,7 @@ const AdminItems = () => {
                           <p className="text-lg font-semibold text-gray-500">Drag and drop images here, or click to select files</p>
                         )}
                       </div>
+
                       {filePreviews.length > 0 && (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
                           {filePreviews.map((preview, index) => (
@@ -306,6 +311,7 @@ const AdminItems = () => {
                           ))}
                         </div>
                       )}
+
                       <button
                         className="bg-blue-400 text-white px-4 py-2 rounded"
                         onClick={handleUpload}
@@ -318,27 +324,15 @@ const AdminItems = () => {
                   <>
                     <h2 className="text-xl font-bold mb-4">Edit Product</h2>
                     <form onSubmit={handleEditSubmit}>
-                      {editProduct.images && editProduct.images.length > 0 && (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
-                          {editProduct.images.map((image, index) => (
-                            <div key={index} className="relative border border-gray-300 rounded-lg overflow-hidden">
-                              <img
-                                src={image}
-                                alt="Product"
-                                className="w-full h-32 object-contain"
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      )}
                       <label htmlFor="productName" className="block text-gray-700 font-semibold mb-2">Product Name:</label>
                       <input type="text" name="productName" placeholder="Product Name" defaultValue={editProduct.productName} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+                      
                       <div className="mb-4">
                         <label htmlFor="category" className="block text-gray-700 font-semibold mb-2">Category:</label>
                         <select
                           id="category"
                           name="category"
-                          value={category}
+                          value={editProduct.category}
                           onChange={(e) => setCategory(e.target.value)}
                           className="border border-gray-300 p-2 rounded w-full"
                         >
@@ -348,19 +342,30 @@ const AdminItems = () => {
                           <option value="Designer">Designer</option>
                         </select>
                       </div>
+
                       <label htmlFor="description" className="block text-gray-700 font-semibold mb-2">Product Description:</label>
                       <textarea name="description" placeholder="Description" defaultValue={editProduct.description} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+
                       <label htmlFor="fabric" className="block text-gray-700 font-semibold mb-2">Fabric:</label>
                       <input type="text" name="fabric" placeholder="Fabric" defaultValue={editProduct.fabric} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+
                       <label htmlFor="color" className="block text-gray-700 font-semibold mb-2">Color:</label>
                       <input type="text" name="color" placeholder="Color" defaultValue={editProduct.color} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+
                       <label htmlFor="price" className="block text-gray-700 font-semibold mb-2">Price:</label>
-                      <input type="number" step="0.01" name="price" placeholder="Price" defaultValue={editProduct.price} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+                      <input type="number" step="0.01" name="price" placeholder={editProduct.price} defaultValue={editProduct.price} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+
+                      <label htmlFor="productCode" className="block text-gray-700 font-semibold mb-2">Product Code:</label>
+                      <input type="text" name="productCode" placeholder="Product Code" defaultValue={editProduct.productCode} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+
+                      <label htmlFor="specialCategory" className="block text-gray-700 font-semibold mb-2">Special Category:</label>
+                      <input type="text" name="specialCategory" placeholder="Special Category" defaultValue={editProduct.specialCategory} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
+
                       <button
+                        className="bg-blue-500 text-white px-4 py-2 rounded"
                         type="submit"
-                        className="bg-green-500 text-white px-4 py-2 rounded"
                       >
-                        Save
+                        Update
                       </button>
                     </form>
                   </>
@@ -369,9 +374,8 @@ const AdminItems = () => {
             </Modal>
             <ConfirmDialog
               isOpen={confirmDialogIsOpen}
-              onRequestClose={closeConfirmDialog}
+              onClose={closeConfirmDialog}
               onConfirm={handleConfirmDelete}
-              message="Are you sure you want to delete this product?"
             />
           </div>
         </>
