@@ -31,9 +31,10 @@ const Cart = () => {
 
                     // Fetch cart items
                     const response = await axiosInstance.get(`/user/carts/getItems`, {
-                        params: { userId: user_id }
+                         userId: user_id 
                     });
-                    setItems(response.data.items);
+                    console.log(response)
+                    setItems(response.data);
                 } catch (e) {
                     console.error("Error fetching cart", e);
                 }

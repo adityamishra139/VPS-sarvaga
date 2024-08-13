@@ -82,8 +82,8 @@ const Description = () => {
           })
         }
         const user_id = user_response.data.id;
-        console.log(user_response)
         console.log(user_id);
+        console.log(productID)
         const response = await axiosInstance.post("user/carts/additem",{
           userId : user_id,
           productId : productID
