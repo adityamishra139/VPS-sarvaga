@@ -286,7 +286,7 @@ const AdminItems = () => {
                         {isDragActive ? (
                           <p className="text-lg font-semibold text-green-500">Drop the files here...</p>
                         ) : (
-                          <p className="text-lg font-semibold text-gray-500">Drag and drop images here, or click to select files</p>
+                          <p className="text-lg font-semibold text-gray-500">Drag and drop images here, or click to select files <p className='text-red-500'>(Minimum 2 images)</p></p>
                         )}
                       </div>
 
@@ -313,7 +313,7 @@ const AdminItems = () => {
                       )}
 
                       <button
-                        className="bg-blue-400 text-white px-4 py-2 rounded"
+                        className="bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-400"
                         onClick={handleUpload}
                       >
                         Upload
@@ -362,7 +362,7 @@ const AdminItems = () => {
                       <input type="text" name="specialCategory" placeholder="Special Category" defaultValue={editProduct.specialCategory} className="mb-4 p-2 border border-gray-300 rounded w-full" required />
 
                       <button
-                        className="bg-blue-500 text-white px-4 py-2 rounded"
+                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-400"
                         type="submit"
                       >
                         Update
