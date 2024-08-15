@@ -10,36 +10,33 @@ const Card = ({ product }) => {
   return (
     <div 
       onClick={() => handleClick(product.id)} 
-      className="w-full max-w-sm rounded-lg overflow-hidden shadow-lg hover:shadow-xl transform transition-transform hover:scale-105 bg-white m-4 group cursor-pointer"
+      className="w-full max-w-sm h-96 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transform transition-transform hover:scale-105 bg-white m-4 group cursor-pointer"
     >
-      {product?.images && product.images.length > 0 ? (
-        <div className="w-full h-56 flex items-center justify-center overflow-hidden rounded-t-lg relative bg-yellow-50 p-4">
+      <div className="relative w-full h-full bg-gray-100 overflow-hidden rounded-lg">
+        {product?.images && product.images.length > 0 ? (
           <img
             src={`https://api.sarvagafashions.com/${product.images[0].url}`}
             alt={product.productName}
-            className="object-contain w-full h-full rounded-lg group-hover:opacity-90 transition-opacity"
+            className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
           />
+        ) : (
+          <div className="flex items-center justify-center w-full h-full text-gray-500 bg-gray-200 rounded-lg">
+            No Image Available
+          </div>
+        )}
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-transparent to-transparent p-4 rounded-b-lg">
+          <div className="font-semibold text-lg text-white group-hover:text-yellow-400 transition-colors">
+            {product.productName}
+          </div>
+          <div className="flex items-center justify-between mt-2 space-x-2">
+            <span className="text-yellow-400 font-bold text-lg whitespace-nowrap">₹{product.price}</span>
+            <button 
+              className="text-white bg-yellow-400 bg-opacity-80 border border-yellow-400 rounded-lg px-3 py-1 text-sm hover:bg-opacity-100 hover:text-black transition-colors"
+            >
+              Details
+            </button>
+          </div>
         </div>
-      ) : (
-        <div className="text-gray-500 text-center h-56 flex items-center justify-center rounded-t-lg bg-yellow-50">
-          No Image Available
-        </div>
-      )}
-      <div className="px-6 py-4">
-        <div className="font-semibold text-lg text-gray-800 mb-2 group-hover:text-yellow-600 transition-colors">
-          {product.productName}
-        </div>
-        {/* <p className="text-gray-600 text-sm">
-          {product.description ? product.description.substring(0, 80) + '...' : 'No description available.'}
-        </p> */}
-      </div>
-      <div className="px-6 py-4 flex items-center justify-between">
-        <span className="text-yellow-600 font-bold text-lg">₹{product.price}</span>
-        <button 
-          className="text-yellow-600 bg-transparent border border-yellow-600 rounded-lg px-4 py-1 text-sm hover:bg-yellow-600 hover:text-white transition-colors"
-        >
-          View Details
-        </button>
       </div>
     </div>
   );

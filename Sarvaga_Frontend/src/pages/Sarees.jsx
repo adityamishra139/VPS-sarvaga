@@ -4,7 +4,6 @@ import { useAuth0 } from "@auth0/auth0-react";
 import axiosInstance from '../api/AxiosInstance';
 import PropagateLoader from "react-spinners/PropagateLoader";
 
-// Lazy load the Card component
 const Card = lazy(() => import("../components/Cards/Card"));
 
 export default function Sarees() {
@@ -46,9 +45,9 @@ export default function Sarees() {
           <div className="container mx-auto px-4 mt-16">
             <h1 className="text-5xl font-bold text-center mb-12 text-gray-800">Our Exquisite Saree Collection</h1>
             <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><PropagateLoader color="#A855F7" /></div>}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 sm:gap-8 px-2 sm:px-0">
                 {sarees.map((saree) => (
-                  <div key={saree.id}>
+                  <div key={saree.id} className="w-full">
                     <Card product={saree} />
                   </div>
                 ))}
