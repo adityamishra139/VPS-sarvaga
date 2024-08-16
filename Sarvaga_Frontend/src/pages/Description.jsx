@@ -9,12 +9,14 @@ import PropagateLoader from 'react-spinners/PropagateLoader';
 import { useAuth0 } from "@auth0/auth0-react";
 
 const Description = () => {
+
   const navigate = useNavigate();
+
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const { isAuthenticated, user } = useAuth0();
+  const { isAuthenticated ,user} = useAuth0();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -61,20 +63,54 @@ const Description = () => {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: true,
+    arrows: true, // Enable/disable arrows as needed
+  };
+
+  const handleAdd2Cart = async(productID) => {
+    if (isAuthenticated) {
+      try
+      {
+        let user_response = await axiosInstance.post("/user/signin",{
+          username : user.name,
+          email : user.email
+        })
+        if(user_response.data.msg == "User not found")
+        {
+          user_response = await axiosInstance.post("user/signup",{
+            username : user.name,
+            email : user.email,
+          })
+        }
+        const user_id = user_response.data.id;
+        console.log(user_id);
+        console.log(productID)
+        const response = await axiosInstance.post("user/carts/additem",{
+          userId : user_id,
+          productId : productID
+        })
+        console.log(response)
+        alert("Added to Cart");
+      }
+      catch(e){
+        console.error("error in adding product to cart (user)")
+      }
+    } else {
+      alert("Login to add product into cart");
+    }
   };
 
   return (
     <>
       <Navbar />
-      <div className="container mx-auto p-4">
+      <div className="container p-4">
         <div className="flex flex-col md:flex-row md:space-x-8">
           <div className="w-full md:w-1/2">
             <Slider {...settings}>
               {product.images.map((image) => (
-                <div key={image.id} className="relative p-4">
+                <div key={image.id} className="flex justify-center">
+                   
                   <img
-                    className="w-full h-96 object-cover md:object-contain md:h-auto rounded-lg shadow-md"
+                    className="w-full h-auto max-h-96 object-contain"
                     src={`https://api.sarvagafashions.com${image.url}`}
                     alt={product.productName}
                     onClick={() => handleImageClick(image.url)}
@@ -106,7 +142,7 @@ const Description = () => {
               />
             </div>
             <button
-              onClick={() => handleAdd2Cart(product.id)}
+              onClick={()=>handleAdd2Cart(product.id)}
               className="mt-6 bg-blue-500 text-white py-3 px-6 rounded-lg text-lg font-semibold hover:bg-blue-600 transition duration-300"
             >
               Add to Cart
