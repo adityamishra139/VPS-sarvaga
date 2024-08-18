@@ -28,7 +28,7 @@ const ProductsData = [
         aosDelay: "100",
     },
     {
-        id: 3,
+        id: 4,
         img: img3,
         title: "Dupion Silk",
         rating: 5.0,
@@ -36,7 +36,7 @@ const ProductsData = [
         aosDelay: "200",
     },
     {
-        id: 4,
+        id: 3,
         img: img4,
         title: "Cotton",
         rating: 4.3,
@@ -103,6 +103,10 @@ const Products = () => {
         ]
     };
 
+    const handleViewProducts = ()=>{
+        navigate('/sarees')
+    }
+
     return (
         <div className='mt-14 mb-12 flex justify-center'>
             <div className="container bg-gray-100 py-10 px-5 rounded-lg shadow-lg">
@@ -137,7 +141,7 @@ const Products = () => {
                 </Slider>
                 {/* View All Button */}
                 <div className='flex justify-center mt-10'>
-                    <button className="text-white bg-purple-700 hover:bg-purple-600 border border-purple-700 rounded-xl w-[200px] hover:w-[250px] transition-all duration-300 px-4 py-2">
+                    <button onClick={handleViewProducts} className="text-white bg-purple-700 hover:bg-purple-600 border border-purple-700 rounded-xl w-[200px] hover:w-[250px] transition-all duration-300 px-4 py-2">
                         View All Products
                     </button>
                 </div>
