@@ -15,7 +15,7 @@ const Card = ({ product }) => {
       <div className="relative w-full h-full bg-gray-100 overflow-hidden rounded-lg">
         {product?.images && product.images.length > 0 ? (
           <img
-            src={`https://api.sarvagafashions.com/${product.images[0].url}`}
+            src={`https://api.sarvagafashions.com${product.images[0].url}`}
             alt={product.productName}
             className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
           />

@@ -10,7 +10,7 @@ const Card = ({ product, onEdit, onDelete }) => {
             <div className="grid grid-cols-2 gap-2">
               {product.images.map((image, index) => (
                 <div key={index} className="aspect-w-17 aspect-h-17">
-                  <img src={image} alt={`product-${index}`} className="object-cover w-full h-full" />
+                  <img src={`https://api.sarvagafashions.com${image.url}`} alt={`product-${index}`} className="object-cover w-full h-full" />
                 </div>
               ))}
             </div>

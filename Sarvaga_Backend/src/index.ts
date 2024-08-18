@@ -9,18 +9,16 @@ const port = 5172;
 
 app.use(cors());
 
-// Middleware to parse JSON bodies
 app.use(express.json());
 
-// Serve static files from the 'uploads/products' directory
 app.use('/uploads/products', express.static(path.join(__dirname, 'uploads/products')));
-console.log(path.join(__dirname, 'uploads/products'));
 
-// Define your routes
+console.log(`Serving static files from: ${path.join(__dirname, 'uploads/products')}`);
+
 app.use('/BE/admin', adminRoutes);
 app.use('/BE/user', userRoutes);
 
-// Start the server
 app.listen(port, () => {
-  console.log(`Listening to port ${port}`);
+  console.log(`Server is listening on port ${port}`);
 });
+
