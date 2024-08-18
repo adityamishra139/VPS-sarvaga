@@ -53,8 +53,13 @@ const productsData = [
     },
 ];
 
+
+
 const Trending = () => {
     const navigate = useNavigate();
+    const handleViewProducts = ()=>{
+        navigate('/sarees')
+    }
     const handleClick = (id) => {
         navigate(`/description/${id}`);
     };
@@ -125,7 +130,7 @@ const Trending = () => {
                     ))}
                 </Slider>
                 <div className='flex justify-center mt-10'>
-                    <button className="text-white bg-purple-700 hover:bg-purple-600 border border-purple-700 rounded-xl w-[200px] hover:w-[250px] transition-all duration-300 px-4 py-2">
+                    <button onClick={handleViewProducts} className="text-white bg-purple-700 hover:bg-purple-600 border border-purple-700 rounded-xl w-[200px] hover:w-[250px] transition-all duration-300 px-4 py-2">
                         View All Products
                     </button>
                 </div>
